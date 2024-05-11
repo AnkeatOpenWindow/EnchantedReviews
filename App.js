@@ -1,16 +1,8 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import Login from './Screens/LoginScreen';
-import CreateAcount from './Screens/CreateAcountScreen';
-import Registration from './Screens/RegistrationScreen'
+import React from 'react';
+import Navigation from './src/navigation/Navigation';
 
+const App = () => {
+  return <Navigation />;
+};
 
-export default function App() {
-  return (
-    //<CreateAcount></CreateAcount>
-    //<Login></Login>
-    <Registration></Registration>
-  );
-}
-
-
+export default App;
