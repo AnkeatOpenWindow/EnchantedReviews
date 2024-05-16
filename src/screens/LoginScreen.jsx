@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, Image, TextInput } from 'react-native';
+import { View, StyleSheet, Text, Image, TextInput, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import CrystalButton from '../component/CrystalButton';
 import Logo from '../../assets/Logo.png'; // Adjust the path as per your actual folder structure
@@ -10,12 +10,14 @@ const LoginScreen = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  
+
   return (
     <View style={styles.backgroundColor}>
       <View style={styles.maincontainer}>
         <View style={styles.centeredContainer}>
           <Image
-            style={styles.image}
+            style={styles.image} // add shimmer to img
             source={Logo}
             resizeMode="contain" // Adjust resizeMode based on your requirements
           />
@@ -25,7 +27,7 @@ const LoginScreen = () => {
         {/* Input Fields */}
         <View style={styles.inputContainer}>
           <TextInput
-            style={styles.input}
+            style={styles.input} //to Do: padding around text
             placeholder="Email"
             placeholderTextColor="white" // Set the placeholder text color
             value={username}

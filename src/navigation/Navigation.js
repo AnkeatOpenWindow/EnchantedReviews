@@ -17,32 +17,28 @@ const Tab = createBottomTabNavigator();
 const HomeTabNavigator = () => {
   return (
     <Tab.Navigator
-      tabBarOptions={{
-        activeTintColor: '#332850',
-        inactiveTintColor: '#745BB6',
-      }}
+      screenOptions={({ route }) => ({
+        tabBarActiveTintColor: '#332850',
+        tabBarInactiveTintColor: '#745BB6',
+        tabBarStyle: [{ display: 'flex' }, null],
+        tabBarIcon: ({ color, size }) => {
+          let iconName;
+
+          if (route.name === 'HomeScreen') {
+            iconName = 'home-sharp';
+          } else if (route.name === 'SettingScreen') {
+            iconName = 'settings-sharp';
+          }
+
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+      })}
     >
-      <Tab.Screen
-        name="HomeScreen"
-        component={HomeScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home-sharp" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="SettingScreen"
-        component={SettingScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="settings-sharp" size={size} color={color} />
-          ),
-        }}
-      />
+      <Tab.Screen name="HomeScreen" component={HomeScreen} />
+      <Tab.Screen name="SettingScreen" component={SettingScreen} />
     </Tab.Navigator>
   );
-}
+};
 
 const Navigation = () => {
   const [fontLoaded] = useFonts({
