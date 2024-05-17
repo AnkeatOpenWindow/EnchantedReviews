@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Text, Image, TextInput, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import CrystalButton from '../component/CrystalButton';
-import Logo from '../../assets/Logo.png'; // Adjust the path as per your actual folder structure
+import CrystalButton2 from '../component/CrystalButton2';
+import ShimmerImage from '../component/ShimmerImage';
 
 const SignUpScreen = () => {
   const navigation = useNavigation();
@@ -13,19 +14,15 @@ const SignUpScreen = () => {
     <View style={styles.backgroundColor}>
       <View style={styles.maincontainer}>
         <View style={styles.centeredContainer}>
-          <Image
-            style={styles.image}
-            source={Logo}
-            resizeMode="contain" // Adjust resizeMode based on your requirements
-          />
+          <ShimmerImage />
           <Text style={styles.loginText}>Create an account</Text>
         </View>
 
         {/* Input Fields */}
         <View style={styles.inputContainer}>
-        <TextInput
+          <TextInput
             style={styles.input}
-            placeholder="Unsername"
+            placeholder="Username"
             placeholderTextColor="white" // Set the placeholder text color
             value={username}
             onChangeText={setUsername}
@@ -55,7 +52,7 @@ const SignUpScreen = () => {
           <Text style={styles.centeredText}>Or</Text>
         </View>
 
-        <CrystalButton title="Back to Login" onPress={() => navigation.navigate('LoginScreen')} />
+        <CrystalButton2 title="Return to Login" onPress={() => navigation.navigate('LoginScreen')} />
       </View>
 
     </View>
@@ -81,15 +78,17 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   loginText: {
+    marginTop: 20,
     fontFamily: 'ModernAntiquaRegular',
     fontSize: 32, // Adjust the font size as needed
-  }, 
+  },
   inputContainer: {
     marginBottom: 66,
   },
   input: {
     color: 'white',
     backgroundColor: '#745BB6',
+    paddingLeft: 30,
     padding: 10,
     borderRadius: 100,
     marginBottom: 10,

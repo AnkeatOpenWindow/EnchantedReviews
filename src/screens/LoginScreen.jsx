@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Text, Image, TextInput, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import CrystalButton from '../component/CrystalButton';
-import Logo from '../../assets/Logo.png'; // Adjust the path as per your actual folder structure
+import CrystalButton2 from '../component/CrystalButton2';
+import ShimmerImage from '../component/ShimmerImage';
 
 
 const LoginScreen = () => {
@@ -16,11 +17,7 @@ const LoginScreen = () => {
     <View style={styles.backgroundColor}>
       <View style={styles.maincontainer}>
         <View style={styles.centeredContainer}>
-          <Image
-            style={styles.image} // add shimmer to img
-            source={Logo}
-            resizeMode="contain" // Adjust resizeMode based on your requirements
-          />
+        <ShimmerImage />
           <Text style={styles.loginText}>Login</Text>
         </View>
 
@@ -51,7 +48,7 @@ const LoginScreen = () => {
           <Text style={styles.centeredText}>Or</Text>
         </View>
         
-        <CrystalButton title="Sign Up" onPress={() => navigation.navigate('SignUpScreen')} />
+        <CrystalButton2 title="Create an account" onPress={() => navigation.navigate('SignUpScreen')} />
       </View>
     </View>
   );
@@ -82,6 +79,7 @@ const styles = StyleSheet.create({
   input: {
     color:'white',
     backgroundColor: '#745BB6',
+    paddingLeft: 30,
     padding: 10,
     borderRadius: 100,
     marginBottom: 10,
@@ -98,6 +96,7 @@ const styles = StyleSheet.create({
     // You can add additional styles for the text if needed
   },
   loginText: {
+    marginTop: 20,
     fontFamily: 'ModernAntiquaRegular',
     fontSize: 32, // Adjust the font size as needed
   },
