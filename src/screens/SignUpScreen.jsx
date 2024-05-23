@@ -4,11 +4,23 @@ import { useNavigation } from '@react-navigation/native';
 import CrystalButton from '../component/CrystalButton';
 import CrystalButton2 from '../component/CrystalButton2';
 import ShimmerImage from '../component/ShimmerImage';
+import { handleRegistration } from '../services/authService';
 
 const SignUpScreen = () => {
   const navigation = useNavigation();
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const register = () => {
+    handleRegistration(email, password)
+      .then(() => {
+        navigation.navigate('Home'); // Navigate to the 'Home' screen after successful registration
+      })
+      .catch((error) => {
+        console.error(error.message);
+      });
+  };
 
   return (
     <View style={styles.backgroundColor}>
@@ -32,21 +44,22 @@ const SignUpScreen = () => {
             style={styles.input}
             placeholder="Email"
             placeholderTextColor="white" // Set the placeholder text color
-            value={username}
-            onChangeText={setUsername}
+            value={email}
+            onChangeText={text => setEmail(text)}
+            keyboardType="email-address"
             marginBottom={26}
           />
           <TextInput
             style={styles.input}
             placeholder="Password"
             placeholderTextColor="white" // Set the placeholder text color
-            secureTextEntry={true}
             value={password}
-            onChangeText={setPassword}
+            onChangeText={text => setPassword(text)}
+            secureTextEntry
           />
         </View>
 
-        <CrystalButton title="Sign up" onPress={() => navigation.navigate('HomeTabNavigator')} />
+        <CrystalButton title="Sign up" onPress={register} />
 
         <View style={styles.centeredTextContainer}>
           <Text style={styles.centeredText}>Or</Text>

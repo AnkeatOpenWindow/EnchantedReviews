@@ -4,53 +4,63 @@ import { useNavigation } from '@react-navigation/native';
 import CrystalButton from '../component/CrystalButton';
 import CrystalButton2 from '../component/CrystalButton2';
 import ShimmerImage from '../component/ShimmerImage';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { handleLogin } from '../services/authService';
 
 
 const LoginScreen = () => {
   const navigation = useNavigation();
-  const [username, setUsername] = useState('');
+
+  const navigateToRegister = () => {
+    navigation.navigate('Register'); // Ensure this matches the registered screen name
+  };
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  
+  const login = () => {
+    handleLogin(email, password);
+  }
+
+
 
   return (
-    <View style={styles.backgroundColor}>
-      <View style={styles.maincontainer}>
-        <View style={styles.centeredContainer}>
-        <ShimmerImage />
-          <Text style={styles.loginText}>Login</Text>
-        </View>
+      <View style={styles.backgroundColor}>
+        <View style={styles.maincontainer}>
+          <View style={styles.centeredContainer}>
+            <ShimmerImage />
+            <Text style={styles.loginText}>Login</Text>
+          </View>
 
-        {/* Input Fields */}
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input} //to Do: padding around text
-            placeholder="Email"
-            placeholderTextColor="white" // Set the placeholder text color
-            value={username}
-            onChangeText={setUsername}
-            marginBottom={26}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor="white" // Set the placeholder text color
-            secureTextEntry={true}
-            value={password}
-            onChangeText={setPassword}
-          />
-        </View>
+          {/* Input Fields */}
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input} //to Do: padding around text
+              placeholder="Your Email"
+              placeholderTextColor="white" // Set the placeholder text color
+              defaultValue={email}
+              onChangeText={newText => setEmail(newText)}
+              marginBottom={26}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Your Password"
+              placeholderTextColor="white" // Set the placeholder text color
+              secureTextEntry={true}
+              defaultValue={password}
+              onChangeText={newText => setPassword(newText)}
+            />
+          </View>
 
-        {/* Buttons */}
-        <CrystalButton title="Login" onPress={() => navigation.navigate('HomeTabNavigator')} />
-        
-        <View style={styles.centeredTextContainer}>
-          <Text style={styles.centeredText}>Or</Text>
+          {/* Buttons */}
+          <CrystalButton title="Login" onPress={login} />
+
+          <View style={styles.centeredTextContainer}>
+            <Text style={styles.centeredText}>Or</Text>
+          </View>
+
+          <CrystalButton2 title="Create an account" onPress={() => navigation.navigate('SignUpScreen')} />
         </View>
-        
-        <CrystalButton2 title="Create an account" onPress={() => navigation.navigate('SignUpScreen')} />
       </View>
-    </View>
   );
 };
 
@@ -77,7 +87,7 @@ const styles = StyleSheet.create({
     marginBottom: 66,
   },
   input: {
-    color:'white',
+    color: 'white',
     backgroundColor: '#745BB6',
     paddingLeft: 30,
     padding: 10,
