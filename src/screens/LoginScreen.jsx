@@ -34,9 +34,9 @@ const LoginScreen = () => {
           {/* Input Fields */}
           <View style={styles.inputContainer}>
             <TextInput
-              style={styles.input} //to Do: padding around text
+              style={styles.input}
               placeholder="Your Email"
-              placeholderTextColor="white" // Set the placeholder text color
+              placeholderTextColor="white" 
               defaultValue={email}
               onChangeText={newText => setEmail(newText)}
               marginBottom={26}

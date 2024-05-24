@@ -35,7 +35,7 @@ const SignUpScreen = () => {
           <TextInput
             style={styles.input}
             placeholder="Username"
-            placeholderTextColor="white" // Set the placeholder text color
+            placeholderTextColor="white"
             value={username}
             onChangeText={setUsername}
             marginBottom={26}

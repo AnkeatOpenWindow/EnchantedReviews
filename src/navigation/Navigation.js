@@ -14,6 +14,7 @@ import HomeScreen from '../screens/HomeScreen';
 import SettingScreen from '../screens/SettingScreen';
 import CompetitionScreen from '../screens/CompetitionScreen';
 import DetailsScreen from '../screens/DetailsScreen';
+import ReviewScreen from '../screens/Review';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -43,6 +44,7 @@ const HomeTabNavigator = () => {
       {/* Add CompetitionScreen as a nested screen */}
       <Tab.Screen name="Competition" component={CompetitionScreen} options={{ headerShown: false, tabBarButton: () => null }} />
       <Tab.Screen name="Details" component={DetailsScreen} options={{ headerShown: false, tabBarButton: () => null }} />
+      <Tab.Screen name="Review" component={ReviewScreen} options={{ headerShown: false, tabBarButton: () => null }} />
     </Tab.Navigator>
 
   );

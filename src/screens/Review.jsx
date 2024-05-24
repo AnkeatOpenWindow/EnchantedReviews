@@ -1,32 +1,25 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, TextInput } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import book1 from '../../assets/book1.png';
 import profile from '../../assets/profile.jpg';
+import CrystalButton3 from '../component/CrystalButton3';
 
-const DetailsScreen = ({ navigation }) => {
-  
-
-  const handleNavigateToReview = () => {
-    navigation.navigate('Review');
-  };
-
-  const handleNavigateToCompetitionScreen = () => {
-    navigation.navigate('Competition');
-  };
-
+const ReviewScreen = ({ navigation }) => {
   const [isFilled, setIsFilled] = useState(false);
 
-  const toggleHeart = () => {
-    setIsFilled(!isFilled);
+  const handleNavigateToDetail = () => {
+    navigation.navigate('Details');
   };
+
+ 
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.rowContainer}>
           <View style={styles.back}>
-            <TouchableOpacity onPress={handleNavigateToCompetitionScreen}>
+            <TouchableOpacity onPress={handleNavigateToDetail}>
               <Ionicons name="arrow-back" size={32} color="white" />
             </TouchableOpacity>
           </View>
@@ -75,9 +68,7 @@ const DetailsScreen = ({ navigation }) => {
           <View style={styles.rowContainer}>
             <Text style={styles.heading1}>Reviews</Text>
             <View style={styles.add}>
-              <TouchableOpacity onPress={handleNavigateToReview}>
-                <Ionicons name="add-circle-outline" size={32} color='white' />
-              </TouchableOpacity>
+              <CrystalButton3 title="Save" />
             </View>
           </View>
 
@@ -88,22 +79,14 @@ const DetailsScreen = ({ navigation }) => {
                 source={profile}
               />
               <Text style={styles.username}>Username</Text>
-              {/*<Image
-                style={styles.tinyLogo2}
-                source={crest}
-              />*/}
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder="Put in your review"
+              placeholderTextColor="white"
+              marginBottom={26}
+            />
 
-            </View>
-            <Text style={styles.reviewDescription}>
-              OMG THIS BOOK IS BY FAR MY FAVOURITE THING EVER!!! I am a BIG reader/audiobook listener and only recently got into fantasy, but of the hundreds of books I’ve read, this takes first place in my favorites!
-            </Text>
-            {/* make it so that when it's tapped it fills out*/}
-            <View style={styles.voteContainer}>
-              <TouchableOpacity onPress={toggleHeart}>
-              <Ionicons name={isFilled ? 'heart' : 'heart-outline'} size={32} color={isFilled ? '#CDF2FA' : 'white'} marginTop={10} marginRight={10} />
-              </TouchableOpacity>
-              <Text style={styles.body} paddingTop={10}>6</Text>
-            </View>
 
           </View>
 
@@ -214,9 +197,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     flex: 1,
+    width: '100%' // Removed the extra space after 100%
   },
   add: {
-    marginLeft: 250, // Your styles for the share button container
+    marginLeft: 140, // Your styles for the share button container
   },
   profileContainer: {
     flexDirection: 'row',
@@ -234,12 +218,6 @@ const styles = StyleSheet.create({
     fontSize: 19,
     fontWeight: 'bold',
   },
-  tinyLogo2: { //ToDO: make it so that it only apear if the user has the most votes
-    width: 30,
-    height: 30,
-    borderRadius: 100, // Half of the width and height to make it circular
-    marginLeft: 150,
-  },
   reviewDescription: {
     color: 'white',
     fontSize: 16,
@@ -250,4 +228,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DetailsScreen;
+export default ReviewScreen;

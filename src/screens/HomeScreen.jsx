@@ -57,7 +57,7 @@ const HomeScreen = ({ navigation }) => {
             />
           </View>
           <Text style={styles.body2} paddingBottom={5}>Book review competition</Text>
-          <Text style={styles.body3}>Open till: {/*remember to add date when making data*/}</Text>
+          <Text style={styles.body3}>Open till: 14 June 2024</Text>
         </TouchableOpacity>
 
       </View>
@@ -119,7 +119,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     paddingLeft: 20,
     color: 'white',
-
   },
   image: {
     height: 100,
