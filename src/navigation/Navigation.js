@@ -50,7 +50,6 @@ const HomeTabNavigator = () => {
   );
 };
 
-
 const Navigation = () => {
   const [loggedIn, setLoggedIn] = useState(false);
 

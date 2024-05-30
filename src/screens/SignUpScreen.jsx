@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, Image, TextInput, Button } from 'react-native';
+import { View, StyleSheet, Text, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import CrystalButton from '../component/CrystalButton';
 import CrystalButton2 from '../component/CrystalButton2';
@@ -13,7 +13,7 @@ const SignUpScreen = () => {
   const [password, setPassword] = useState('');
 
   const register = () => {
-    handleRegistration(email, password)
+    handleRegistration(email, password, username) // Pass the username
       .then(() => {
         navigation.navigate('Home'); // Navigate to the 'Home' screen after successful registration
       })
@@ -43,7 +43,7 @@ const SignUpScreen = () => {
           <TextInput
             style={styles.input}
             placeholder="Email"
-            placeholderTextColor="white" // Set the placeholder text color
+            placeholderTextColor="white"
             value={email}
             onChangeText={text => setEmail(text)}
             keyboardType="email-address"
@@ -52,7 +52,7 @@ const SignUpScreen = () => {
           <TextInput
             style={styles.input}
             placeholder="Password"
-            placeholderTextColor="white" // Set the placeholder text color
+            placeholderTextColor="white"
             value={password}
             onChangeText={text => setPassword(text)}
             secureTextEntry
@@ -67,10 +67,10 @@ const SignUpScreen = () => {
 
         <CrystalButton2 title="Return to Login" onPress={() => navigation.navigate('LoginScreen')} />
       </View>
-
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   backgroundColor: {
     flex: 1,
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   },
   centeredContainer: {
     alignItems: 'center',
-    marginBottom: 20, // Adjust the space between the image and the button as needed
+    marginBottom: 20,
   },
   image: {
     height: 220,
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   loginText: {
     marginTop: 20,
     fontFamily: 'ModernAntiquaRegular',
-    fontSize: 32, // Adjust the font size as needed
+    fontSize: 32,
   },
   inputContainer: {
     marginBottom: 66,
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: '#CDF2FA', // Fantasy-themed border color
+    borderColor: '#CDF2FA',
   },
   centeredTextContainer: {
     marginTop: 10,
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   },
   centeredText: {
     textAlign: 'center',
-    // You can add additional styles for the text if needed
   },
-})
+});
+
 export default SignUpScreen;

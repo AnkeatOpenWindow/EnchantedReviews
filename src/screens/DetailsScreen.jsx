@@ -4,6 +4,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import book1 from '../../assets/book1.png';
 import profile from '../../assets/profile.jpg';
 
+// TODO: get the data of the books from firestore database and have it display here (data is already up in firestore database)
+
 const DetailsScreen = ({ navigation }) => {
   
 
@@ -63,7 +65,7 @@ const DetailsScreen = ({ navigation }) => {
 
           <View style={styles.box1} marginTopTop={20}>
             <View style={styles.paddingbottom}>
-              <Text style={styles.heading1} paddingBottom={20}>Description</Text>
+              <Text style={styles.heading1} paddingBottom={20}>Plot</Text>
               <Text style={styles.body} paddingBottom={10}>
                 A young scribe is thrust into an elite war college for dragon riders where the only rule is graduate or perish. An addictive fantasy with epic levels of spice and world-building. Twenty-year-old Violet Sorrengail was supposed to enter the Scribe Quadrant, living a quiet life among books and history.
               </Text>

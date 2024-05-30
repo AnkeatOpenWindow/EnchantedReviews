@@ -7,6 +7,7 @@ import ShimmerImage from '../component/ShimmerImage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { handleLogin } from '../services/authService';
 
+//TODO: make is that if the app reloads the users stays logged in untill signed out usin button on homescreen
 
 const LoginScreen = () => {
   const navigation = useNavigation();

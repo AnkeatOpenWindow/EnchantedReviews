@@ -4,6 +4,7 @@ import Logo from '../../assets/Logo.png';
 import book1 from '../../assets/book1.png';
 import book2 from '../../assets/book2.png';
 
+
 const CompetitionScreen = ({ navigation }) => {
 
   const handleNavigateToDetail = () => {
