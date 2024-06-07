@@ -1,8 +1,8 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db, storage } from '../../firebase';
+import { signOut } from 'firebase/auth';
 import { doc, setDoc } from "firebase/firestore";
-import { ref, uploadString, getDownloadURL } from "firebase/storage"; // Import necessary storage functions
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const handleLogin = (email, password) => {

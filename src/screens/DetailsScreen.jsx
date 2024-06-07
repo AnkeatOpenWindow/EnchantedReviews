@@ -1,10 +1,42 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import profile from '../../assets/profile.jpg';
+import { doc, collection, onSnapshot } from 'firebase/firestore';
+import { db } from '../../firebase';
 
 const DetailsScreen = ({ route, navigation }) => {
   const { book } = route.params;
+  const [reviews, setReviews] = useState([]);
+  const [isFilled, setIsFilled] = useState(false);
+  const [expandedReviews, setExpandedReviews] = useState({});
+  const [expandedPlot, setExpandedPlot] = useState(false);
+
+  useEffect(() => {
+    const bookDocRef = doc(db, 'books', book.id);
+    const reviewsCollectionRef = collection(bookDocRef, 'reviews');
+
+    const unsubscribe = onSnapshot(reviewsCollectionRef, (snapshot) => {
+      const reviewsData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setReviews(reviewsData);
+    });
+
+    return () => unsubscribe();
+  }, [book.id]);
+
+  const handleToggleExpandReview = (id) => {
+    setExpandedReviews(prevState => ({
+      ...prevState,
+      [id]: !prevState[id]
+    }));
+  };
+
+  const handleToggleExpandPlot = () => {
+    setExpandedPlot(prevState => !prevState);
+  };
 
   const handleNavigateToReview = () => {
     navigation.navigate('Review', { book });
@@ -13,8 +45,6 @@ const DetailsScreen = ({ route, navigation }) => {
   const handleNavigateToCompetitionScreen = () => {
     navigation.navigate('Competition');
   };
-
-  const [isFilled, setIsFilled] = useState(false);
 
   const toggleHeart = () => {
     setIsFilled(!isFilled);
@@ -61,7 +91,15 @@ const DetailsScreen = ({ route, navigation }) => {
           <View style={styles.box1} marginTopTop={20}>
             <View style={styles.paddingbottom}>
               <Text style={styles.heading1} paddingBottom={20}>Plot</Text>
-              <Text style={styles.body} paddingBottom={10}>{book.plot}</Text>
+              <Text style={styles.body} paddingBottom={10}>
+                {expandedPlot ? book.plot : `${book.plot.substring(0, 100)}...`}
+                <Text
+                  style={styles.readMoreText}
+                  onPress={handleToggleExpandPlot}
+                >
+                  {expandedPlot ? ' Read Less' : ' Read More'}
+                </Text>
+              </Text>
             </View>
           </View>
 
@@ -76,25 +114,33 @@ const DetailsScreen = ({ route, navigation }) => {
             </View>
           </View>
 
-          {/* Review Section */}
-          <View style={styles.box1} marginTopTop={20}>
-            <View style={styles.profileContainer}>
-              <Image
-                style={styles.tinyLogo}
-                source={profile}
-              />
-              <Text style={styles.username}>Username</Text>
+          {/* Reviews Section */}
+          {reviews.map(review => (
+            <View key={review.id} style={styles.box1} marginTopTop={20}>
+              <View style={styles.profileContainer}>
+                <Image
+                  style={styles.tinyLogo}
+                  source={profile}
+                />
+                <Text style={styles.username}>{review.username}</Text>
+              </View>
+              <Text style={styles.reviewDescription}>
+                {expandedReviews[review.id] ? review.text : `${review.text.substring(0, 100)}...`}
+                <Text
+                  style={styles.readMoreText}
+                  onPress={() => handleToggleExpandReview(review.id)}
+                >
+                  {expandedReviews[review.id] ? ' Read Less' : ' Read More'}
+                </Text>
+              </Text>
+              <View style={styles.voteContainer}>
+                <TouchableOpacity onPress={toggleHeart}>
+                  <Ionicons name={isFilled ? 'heart' : 'heart-outline'} size={32} color={isFilled ? '#CDF2FA' : 'white'} marginTop={10} marginRight={10} />
+                </TouchableOpacity>
+                <Text style={styles.body} paddingTop={10}>6</Text>
+              </View>
             </View>
-            <Text style={styles.reviewDescription}>
-              OMG THIS BOOK IS BY FAR MY FAVOURITE THING EVER!!! I am a BIG reader/audiobook listener and only recently got into fantasy, but of the hundreds of books I’ve read, this takes first place in my favorites!
-            </Text>
-            <View style={styles.voteContainer}>
-              <TouchableOpacity onPress={toggleHeart}>
-                <Ionicons name={isFilled ? 'heart' : 'heart-outline'} size={32} color={isFilled ? '#CDF2FA' : 'white'} marginTop={10} marginRight={10} />
-              </TouchableOpacity>
-              <Text style={styles.body} paddingTop={10}>6</Text>
-            </View>
-          </View>
+          ))}
         </View>
       </ScrollView>
     </View>
@@ -201,7 +247,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#745BB6',
     borderRadius: 10,
     padding: 10,
-    flex: 1,
+    width: '100%', // Ensure the box takes up full width of its container
   },
   add: {
     marginLeft: 250, // Your styles for the share button container
@@ -231,10 +277,16 @@ const styles = StyleSheet.create({
   reviewDescription: {
     color: 'white',
     fontSize: 16,
+    width: '100%', // Make sure the review description takes up the full width
   },
   voteContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  readMoreText: {
+    color: '#CDF2FA',
+    marginTop: 5,
+    textDecorationLine: 'underline',
   },
 });
 

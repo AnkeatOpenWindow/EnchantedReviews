@@ -1,14 +1,67 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, TextInput } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, TextInput, Alert } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import profile from '../../assets/profile.jpg';
 import CrystalButton3 from '../component/CrystalButton3';
+import { auth, db } from '../../firebase';
+import { doc, getDoc, updateDoc, addDoc, collection } from "firebase/firestore";
 
-const ReviewScreen = ({ route, navigation }) => {
+const Review = ({ route, navigation }) => {
   const { book } = route.params;
+
+  const [username, setUsername] = useState('');
+  const [reviewText, setReviewText] = useState('');
+  const [expandedPlot, setExpandedPlot] = useState(false);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const user = auth.currentUser;
+        if (user) {
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          if (userDoc.exists()) {
+            setUsername(userDoc.data().username);
+          }
+        } else {
+          console.log("No user logged in.");
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleNavigateToDetail = () => {
     navigation.navigate('Details', { book });
+  };
+
+  const handleToggleExpandPlot = () => {
+    setExpandedPlot(prevState => !prevState);
+  };
+
+  const handleSaveReview = async () => {
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        const reviewData = {
+          text: reviewText,
+          username: username,
+          userId: user.uid,
+          createdAt: new Date()
+        };
+        const bookDocRef = doc(db, 'books', book.id);
+        await addDoc(collection(bookDocRef, 'reviews'), reviewData);
+        Alert.alert('Success', 'Review saved successfully!');
+        navigation.navigate('Details', { book });
+      } else {
+        Alert.alert('Error', 'No user logged in.');
+      }
+    } catch (error) {
+      console.error('Error saving review:', error);
+      Alert.alert('Error', 'Failed to save review. Please try again.');
+    }
   };
 
   return (
@@ -52,7 +105,15 @@ const ReviewScreen = ({ route, navigation }) => {
           <View style={styles.box1} marginTopTop={20}>
             <View style={styles.paddingbottom}>
               <Text style={styles.heading1} paddingBottom={20}>Plot</Text>
-              <Text style={styles.body} paddingBottom={10}>{book.plot}</Text>
+              <Text style={styles.body} paddingBottom={10}>
+                {expandedPlot ? book.plot : `${book.plot.substring(0, 100)}...`}
+                <Text
+                  style={styles.readMoreText}
+                  onPress={handleToggleExpandPlot}
+                >
+                  {expandedPlot ? ' Read Less' : ' Read More'}
+                </Text>
+              </Text>
             </View>
           </View>
 
@@ -61,7 +122,7 @@ const ReviewScreen = ({ route, navigation }) => {
           <View style={styles.rowContainer}>
             <Text style={styles.heading1}>Reviews</Text>
             <View style={styles.add}>
-              <CrystalButton3 title="Save" />
+              <CrystalButton3 title="Save" onPress={handleSaveReview} />
             </View>
           </View>
 
@@ -71,12 +132,14 @@ const ReviewScreen = ({ route, navigation }) => {
                 style={styles.tinyLogo}
                 source={profile}
               />
-              <Text style={styles.username}>Username</Text>
+              <Text style={styles.username}>{`${username}`}</Text>
             </View>
             <TextInput
               style={styles.input}
               placeholder="Put in your review"
               placeholderTextColor="white"
+              value={reviewText}
+              onChangeText={setReviewText}
               marginBottom={26}
             />
           </View>
@@ -217,6 +280,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 10,
   },
+  readMoreText: {
+    color: '#CDF2FA',
+    marginTop: 5,
+    textDecorationLine: 'underline',
+  },
 });
 
-export default ReviewScreen;
+export default Review;

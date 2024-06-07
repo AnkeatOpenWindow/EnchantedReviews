@@ -8,7 +8,7 @@ import profile from '../../assets/profile.jpg';
 const SettingScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
-  const [profileImage, setProfileImage] = useState(null);
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -19,7 +19,6 @@ const SettingScreen = ({ navigation }) => {
           if (userDoc.exists()) {
             setUsername(userDoc.data().username);
             setEmail(user.email);
-            setProfileImage(userDoc.data().profileImage);
           }
         } else {
           console.log("No user logged in.");
