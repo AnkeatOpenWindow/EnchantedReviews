@@ -1,14 +1,26 @@
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from 'react-native';
-import React from 'react'
+import { collection, onSnapshot } from 'firebase/firestore';
+import { db } from '../../firebase';
 import Logo from '../../assets/Logo.png';
-import book1 from '../../assets/book1.png';
-import book2 from '../../assets/book2.png';
-
 
 const CompetitionScreen = ({ navigation }) => {
+  const [books, setBooks] = useState([]);
 
-  const handleNavigateToDetail = () => {
-    navigation.navigate('Details');
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, 'books'), (snapshot) => {
+      const booksData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setBooks(booksData);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleNavigateToDetail = (book) => {
+    navigation.navigate('Details', { book });
   };
 
   return (
@@ -42,41 +54,30 @@ const CompetitionScreen = ({ navigation }) => {
             <Text style={styles.body} paddingBottom={5}>
               What to know what the badge looks like? Then you'll just have to win and see for yourself.
             </Text>
-
           </View>
         </View>
 
         <Text style={styles.headings2}>Books for reviewing</Text>
         <View style={styles.booksContainer}>
-          <TouchableOpacity style={styles.card} onPress={handleNavigateToDetail}>
-            <View style={styles.imageContainer}>
-              <Image
-                style={styles.image2}
-                source={book1}
-                resizeMode="contain"
-              />
-            </View>
-            <Text style={styles.body2} paddingBottom={5}>Title</Text>
-            <Text style={styles.body3}>Auther</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.card}>
-            <View style={styles.imageContainer}>
-              <Image
-                style={styles.image2}
-                source={book2}
-                resizeMode="contain"
-              />
-            </View>
-            <Text style={styles.body2} paddingBottom={5}>Title</Text>
-            <Text style={styles.body3}>Auther</Text>
-          </TouchableOpacity>
+          {books.map((book) => (
+            <TouchableOpacity key={book.id} style={styles.card} onPress={() => handleNavigateToDetail(book)}>
+              <View style={styles.imageContainer}>
+                <Image
+                  style={styles.image2}
+                  source={{ uri: book.imageURL }}
+                  resizeMode="contain"
+                />
+              </View>
+              <Text style={styles.body2} paddingBottom={5}>{book.title}</Text>
+              <Text style={styles.body3}>{book.author}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
-
-
       </View>
     </ScrollView>
-  )
+  );
 };
+
 const styles = StyleSheet.create({
   scrollView: {
     flexGrow: 1,
@@ -95,21 +96,20 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontFamily: 'ModernAntiquaRegular',
     fontSize: 24,
-    textAlign: 'center', // Center text
+    textAlign: 'center', 
     color: 'white',
   },
   heading2: {
     marginLeft: 10,
     fontFamily: 'ModernAntiquaRegular',
     fontSize: 20,
-    textAlign: 'center', // Center text
+    textAlign: 'center', 
     color: 'white',
   },
   headings2: {
     marginLeft: 10,
     fontFamily: 'ModernAntiquaRegular',
     fontSize: 20,
-
   },
   heading6: {
     marginLeft: 10,
@@ -130,7 +130,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     paddingLeft: 20,
     color: 'white',
-
   },
   image: {
     height: 100,
@@ -147,14 +146,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     flex: 1,
-    alignItems: 'center', // Center horizontally
-    justifyContent: 'center', // Center vertically
-    // add box shaddow later
+    alignItems: 'center', 
+    justifyContent: 'center', 
   },
   booksContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between', // Adjusts space between the items
-    marginBottom: 10, // Adjust the space below the container
+    justifyContent: 'space-between', 
+    marginBottom: 10, 
   },
   card: {
     marginTop: 10,
@@ -170,6 +168,6 @@ const styles = StyleSheet.create({
     width: 150,
     height: 200,
   }
-
 });
-export default CompetitionScreen
+
+export default CompetitionScreen;

@@ -1,16 +1,13 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import book1 from '../../assets/book1.png';
 import profile from '../../assets/profile.jpg';
 
-// TODO: get the data of the books from firestore database and have it display here (data is already up in firestore database)
-
-const DetailsScreen = ({ navigation }) => {
-  
+const DetailsScreen = ({ route, navigation }) => {
+  const { book } = route.params;
 
   const handleNavigateToReview = () => {
-    navigation.navigate('Review');
+    navigation.navigate('Review', { book });
   };
 
   const handleNavigateToCompetitionScreen = () => {
@@ -46,19 +43,17 @@ const DetailsScreen = ({ navigation }) => {
             <View style={styles.imageContainer}>
               <Image
                 style={styles.image2}
-                source={book1}
+                source={{ uri: book.imageURL }}
                 resizeMode="contain"
               />
             </View>
-            <Text style={styles.body2}>Fourth Wing</Text>
-            <Text style={styles.body3}>Rebecca Yarros | 2023</Text>
+            <Text style={styles.body2}>{book.title}</Text>
+            <Text style={styles.body3}>{book.author} | {book.year}</Text>
 
             <View style={styles.genre}>
-              <Text style={styles.genreText}>Fantasy</Text>
-              <Text style={styles.genreText}>Adventure</Text>
-              <Text style={styles.genreText}>Drama</Text>
-              <Text style={styles.genreText}>Romance</Text>
-              <Text style={styles.genreText}>Thriller</Text>
+              {book.genres.map((genre, index) => (
+                <Text key={index} style={styles.genreText}>{genre}</Text>
+              ))}
             </View>
           </View>
           <View style={styles.horizontalLine}></View>
@@ -66,9 +61,7 @@ const DetailsScreen = ({ navigation }) => {
           <View style={styles.box1} marginTopTop={20}>
             <View style={styles.paddingbottom}>
               <Text style={styles.heading1} paddingBottom={20}>Plot</Text>
-              <Text style={styles.body} paddingBottom={10}>
-                A young scribe is thrust into an elite war college for dragon riders where the only rule is graduate or perish. An addictive fantasy with epic levels of spice and world-building. Twenty-year-old Violet Sorrengail was supposed to enter the Scribe Quadrant, living a quiet life among books and history.
-              </Text>
+              <Text style={styles.body} paddingBottom={10}>{book.plot}</Text>
             </View>
           </View>
 
@@ -83,6 +76,7 @@ const DetailsScreen = ({ navigation }) => {
             </View>
           </View>
 
+          {/* Review Section */}
           <View style={styles.box1} marginTopTop={20}>
             <View style={styles.profileContainer}>
               <Image
@@ -90,25 +84,17 @@ const DetailsScreen = ({ navigation }) => {
                 source={profile}
               />
               <Text style={styles.username}>Username</Text>
-              {/*<Image
-                style={styles.tinyLogo2}
-                source={crest}
-              />*/}
-
             </View>
             <Text style={styles.reviewDescription}>
               OMG THIS BOOK IS BY FAR MY FAVOURITE THING EVER!!! I am a BIG reader/audiobook listener and only recently got into fantasy, but of the hundreds of books I’ve read, this takes first place in my favorites!
             </Text>
-            {/* make it so that when it's tapped it fills out*/}
             <View style={styles.voteContainer}>
               <TouchableOpacity onPress={toggleHeart}>
-              <Ionicons name={isFilled ? 'heart' : 'heart-outline'} size={32} color={isFilled ? '#CDF2FA' : 'white'} marginTop={10} marginRight={10} />
+                <Ionicons name={isFilled ? 'heart' : 'heart-outline'} size={32} color={isFilled ? '#CDF2FA' : 'white'} marginTop={10} marginRight={10} />
               </TouchableOpacity>
               <Text style={styles.body} paddingTop={10}>6</Text>
             </View>
-
           </View>
-
         </View>
       </ScrollView>
     </View>
@@ -236,7 +222,7 @@ const styles = StyleSheet.create({
     fontSize: 19,
     fontWeight: 'bold',
   },
-  tinyLogo2: { //ToDO: make it so that it only apear if the user has the most votes
+  tinyLogo2: { // ToDO: make it so that it only appears if the user has the most votes
     width: 30,
     height: 30,
     borderRadius: 100, // Half of the width and height to make it circular

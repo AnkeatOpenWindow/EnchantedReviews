@@ -1,18 +1,15 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, TextInput } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import book1 from '../../assets/book1.png';
 import profile from '../../assets/profile.jpg';
 import CrystalButton3 from '../component/CrystalButton3';
 
-const ReviewScreen = ({ navigation }) => {
-  const [isFilled, setIsFilled] = useState(false);
+const ReviewScreen = ({ route, navigation }) => {
+  const { book } = route.params;
 
   const handleNavigateToDetail = () => {
-    navigation.navigate('Details');
+    navigation.navigate('Details', { book });
   };
-
- 
 
   return (
     <View style={styles.container}>
@@ -37,29 +34,25 @@ const ReviewScreen = ({ navigation }) => {
             <View style={styles.imageContainer}>
               <Image
                 style={styles.image2}
-                source={book1}
+                source={{ uri: book.imageURL }}
                 resizeMode="contain"
               />
             </View>
-            <Text style={styles.body2}>Fourth Wing</Text>
-            <Text style={styles.body3}>Rebecca Yarros | 2023</Text>
+            <Text style={styles.body2}>{book.title}</Text>
+            <Text style={styles.body3}>{book.author} | {book.year}</Text>
 
             <View style={styles.genre}>
-              <Text style={styles.genreText}>Fantasy</Text>
-              <Text style={styles.genreText}>Adventure</Text>
-              <Text style={styles.genreText}>Drama</Text>
-              <Text style={styles.genreText}>Romance</Text>
-              <Text style={styles.genreText}>Thriller</Text>
+              {book.genres.map((genre, index) => (
+                <Text key={index} style={styles.genreText}>{genre}</Text>
+              ))}
             </View>
           </View>
           <View style={styles.horizontalLine}></View>
 
           <View style={styles.box1} marginTopTop={20}>
             <View style={styles.paddingbottom}>
-              <Text style={styles.heading1} paddingBottom={20}>Description</Text>
-              <Text style={styles.body} paddingBottom={10}>
-                A young scribe is thrust into an elite war college for dragon riders where the only rule is graduate or perish. An addictive fantasy with epic levels of spice and world-building. Twenty-year-old Violet Sorrengail was supposed to enter the Scribe Quadrant, living a quiet life among books and history.
-              </Text>
+              <Text style={styles.heading1} paddingBottom={20}>Plot</Text>
+              <Text style={styles.body} paddingBottom={10}>{book.plot}</Text>
             </View>
           </View>
 
@@ -86,10 +79,7 @@ const ReviewScreen = ({ navigation }) => {
               placeholderTextColor="white"
               marginBottom={26}
             />
-
-
           </View>
-
         </View>
       </ScrollView>
     </View>
@@ -218,13 +208,14 @@ const styles = StyleSheet.create({
     fontSize: 19,
     fontWeight: 'bold',
   },
-  reviewDescription: {
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
     color: 'white',
-    fontSize: 16,
-  },
-  voteContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    padding: 10,
+    marginBottom: 20,
+    borderRadius: 10,
   },
 });
 
