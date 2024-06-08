@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, Alert } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import profile from '../../assets/profile.jpg';
 import crest from '../../assets/Crest.png';
-import { doc, collection, onSnapshot } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { doc, collection, onSnapshot, updateDoc, getDoc, arrayUnion, increment } from 'firebase/firestore';
+import { db, auth } from '../../firebase';
 
 const DetailsScreen = ({ route, navigation }) => {
   const { book } = route.params;
@@ -12,6 +12,8 @@ const DetailsScreen = ({ route, navigation }) => {
   const [isFilled, setIsFilled] = useState(false);
   const [expandedReviews, setExpandedReviews] = useState({});
   const [expandedPlot, setExpandedPlot] = useState(false);
+  const [votedReviews, setVotedReviews] = useState(new Set());
+  const [maxVotesReview, setMaxVotesReview] = useState(null);
 
   useEffect(() => {
     const bookDocRef = doc(db, 'books', book.id);
@@ -20,12 +22,27 @@ const DetailsScreen = ({ route, navigation }) => {
     const unsubscribe = onSnapshot(reviewsCollectionRef, (snapshot) => {
       const reviewsData = snapshot.docs.map(doc => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
+        votes: doc.data().votes || 0,
       }));
       setReviews(reviewsData);
+
+      // Find the review with the highest number of votes for this book
+      if (reviewsData.length > 0) {
+        const maxVotesReviewData = reviewsData.reduce((prev, current) => (prev.votes > current.votes) ? prev : current);
+        setMaxVotesReview(maxVotesReviewData);
+      } else {
+        setMaxVotesReview(null);
+      }
     });
 
     return () => unsubscribe();
+  }, [book.id]);
+
+  useEffect(() => {
+    setExpandedReviews({});
+    setVotedReviews(new Set());
+    setMaxVotesReview(null);
   }, [book.id]);
 
   const handleToggleExpandReview = (id) => {
@@ -48,7 +65,40 @@ const DetailsScreen = ({ route, navigation }) => {
   };
 
   const toggleHeart = () => {
-    setIsFilled(!isFilled);
+    setIsFilled(prevState => !prevState);
+  };
+
+  const handleVote = async (reviewId, userId) => {
+    if (!votedReviews.has(reviewId)) {
+      try {
+        const userDocRef = doc(db, 'users', auth.currentUser.uid);
+        const userDocSnapshot = await getDoc(userDocRef);
+        const userData = userDocSnapshot.data();
+
+        if (userData && userData.votedReviews && userData.votedReviews.includes(reviewId)) {
+          throw new Error('You have already voted for this review.');
+        }
+
+        if (auth.currentUser.uid === userId) {
+          throw new Error('You cannot vote for your own review.');
+        }
+
+        const reviewDocRef = doc(db, 'books', book.id, 'reviews', reviewId);
+        await updateDoc(reviewDocRef, { votes: increment(1) });
+
+        const updatedVotedReviews = userData.votedReviews ? [...userData.votedReviews, reviewId] : [reviewId];
+        await updateDoc(userDocRef, { votedReviews: updatedVotedReviews });
+
+        setReviews(prevState =>
+          prevState.map(review => review.id === reviewId ? { ...review, votes: review.votes + 1 } : review)
+        );
+        setVotedReviews(prevState => new Set(prevState.add(reviewId)));
+      } catch (error) {
+        Alert.alert(error.message);
+      }
+    } else {
+      Alert.alert('You have already voted for this review.');
+    }
   };
 
   return (
@@ -124,11 +174,12 @@ const DetailsScreen = ({ route, navigation }) => {
                   source={review.userImage ? { uri: review.userImage } : profile}
                 />
                 <Text style={styles.username}>{review.username}</Text>
-                {/* <Image
-                  style={styles.tinyLogo2}
-                  source={crest}
-                /> */}
-                
+                {maxVotesReview && review.id === maxVotesReview.id && (
+                  <Image
+                    style={styles.tinyLogo2}
+                    source={crest}
+                  />
+                )}
               </View>
               <Text style={styles.reviewDescription}>
                 {expandedReviews[review.id] ? review.text : `${review.text.substring(0, 100)}...`}
@@ -140,10 +191,10 @@ const DetailsScreen = ({ route, navigation }) => {
                 </Text>
               </Text>
               <View style={styles.voteContainer}>
-                <TouchableOpacity onPress={toggleHeart}>
-                  <Ionicons name={isFilled ? 'heart' : 'heart-outline'} size={32} color={isFilled ? '#CDF2FA' : 'white'} marginTop={10} marginRight={10} />
+                <TouchableOpacity onPress={() => handleVote(review.id, review.userId)}>
+                  <Ionicons name="heart-outline" size={32} color={isFilled ? '#CDF2FA' : 'white'} marginTop={10} marginRight={10} />
                 </TouchableOpacity>
-                <Text style={styles.body} paddingTop={10}>6</Text>
+                <Text style={styles.body} paddingTop={10}>{review.votes}</Text>
               </View>
             </View>
           ))}
@@ -163,7 +214,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    zIndex: 100, // Ensure header stays above scroll content
+    zIndex: 100,
     backgroundColor: "#AD91F6",
     paddingTop: 45,
     paddingLeft: 20,
@@ -175,10 +226,10 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingTop: 100,
     marginHorizontal: 20,
-    paddingBottom: 20, // Adjust for the space below the content
+    paddingBottom: 20,
   },
   maincontainer: {
-    alignItems: 'center', // Center the card horizontally
+    alignItems: 'center',
   },
   rowContainer: {
     flexDirection: 'row',
@@ -197,27 +248,27 @@ const styles = StyleSheet.create({
   body2: {
     fontSize: 19,
     color: 'white',
-    marginTop: 10, // Space between the image and the title
+    marginTop: 10,
   },
   body3: {
     fontSize: 16,
     color: 'white',
     fontWeight: '600',
-    marginTop: 5, // Space between the title and the author
+    marginTop: 5,
   },
   share: {
-    marginLeft: 300, // Your styles for the share button container
+    marginLeft: 300,
   },
   card: {
     marginBottom: 10,
     borderRadius: 10,
     padding: 10,
-    alignItems: 'center', // Center the content of the card
+    alignItems: 'center',
     width: '90%',
   },
   imageContainer: {
-    alignItems: 'center', // Center horizontally
-    justifyContent: 'center', // Center vertically
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   image2: {
     width: 320,
@@ -225,12 +276,12 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   genre: {
-    width: 300, // Set a specific width for the genre container
+    width: 300,
     flexDirection: 'row',
-    flexWrap: 'wrap', // Allow the genre texts to wrap to the next line
-    marginTop: 10, // Add space between the author and the genre tags
-    alignItems: 'center', // Center horizontally
-    justifyContent: 'center', // Center vertically
+    flexWrap: 'wrap',
+    marginTop: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   genreText: {
     fontSize: 12,
@@ -238,11 +289,11 @@ const styles = StyleSheet.create({
     padding: 14,
     backgroundColor: "#745BB6",
     borderRadius: 7,
-    marginRight: 10, // Add space between the genre tags
-    marginBottom: 10, // Add space between lines of wrapped tags
+    marginRight: 10,
+    marginBottom: 10,
   },
   horizontalLine: {
-    width: '100%', // Ensure the line fits within the card's width
+    width: '100%',
     height: 2,
     backgroundColor: 'white',
     marginBottom: 10,
@@ -253,37 +304,37 @@ const styles = StyleSheet.create({
     backgroundColor: '#745BB6',
     borderRadius: 10,
     padding: 10,
-    width: '100%', // Ensure the box takes up full width of its container
+    width: '100%',
   },
   add: {
-    marginLeft: 250, // Your styles for the share button container
+    marginLeft: 250,
   },
   profileContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10, // Add marginBottom to separate the profile from the description
+    marginBottom: 10,
   },
   tinyLogo: {
     width: 50,
     height: 50,
-    borderRadius: 100, // Half of the width and height to make it circular
+    borderRadius: 100,
   },
   username: {
-    marginLeft: 10, // Add margin to create space between the profile image and username
+    marginLeft: 10,
     color: 'white',
     fontSize: 19,
     fontWeight: 'bold',
   },
-  tinyLogo2: { // ToDO: make it so that it only appears if the user has the most votes
+  tinyLogo2: {
     width: 30,
     height: 30,
-    borderRadius: 100, // Half of the width and height to make it circular
-    marginLeft: 150,
+    borderRadius: 100,
+    marginLeft: 30,
   },
   reviewDescription: {
     color: 'white',
     fontSize: 16,
-    width: '100%', // Make sure the review description takes up the full width
+    width: '100%',
   },
   voteContainer: {
     flexDirection: 'row',
