@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, TextInput, Alert } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import profile from '../../assets/profile.jpg';
-import CrystalButton3 from '../component/CrystalButton3';
 import { auth, db } from '../../firebase';
-import { doc, getDoc, updateDoc, addDoc, collection } from "firebase/firestore";
+import { doc, getDoc, addDoc, collection } from "firebase/firestore";
 
 const Review = ({ route, navigation }) => {
   const { book } = route.params;
 
-  const [username, setUsername] = useState('');
+  const [userData, setUserData] = useState({ username: '', profileImage: null });
   const [reviewText, setReviewText] = useState('');
   const [expandedPlot, setExpandedPlot] = useState(false);
 
@@ -20,7 +19,8 @@ const Review = ({ route, navigation }) => {
         if (user) {
           const userDoc = await getDoc(doc(db, 'users', user.uid));
           if (userDoc.exists()) {
-            setUsername(userDoc.data().username);
+            const userData = userDoc.data();
+            setUserData({ username: userData.username, profileImage: userData.imageUrl });
           }
         } else {
           console.log("No user logged in.");
@@ -47,8 +47,9 @@ const Review = ({ route, navigation }) => {
       if (user) {
         const reviewData = {
           text: reviewText,
-          username: username,
+          username: userData.username,
           userId: user.uid,
+          userImage: userData.profileImage, // Save user profile image URL
           createdAt: new Date()
         };
         const bookDocRef = doc(db, 'books', book.id);
@@ -122,7 +123,9 @@ const Review = ({ route, navigation }) => {
           <View style={styles.rowContainer}>
             <Text style={styles.heading1}>Reviews</Text>
             <View style={styles.add}>
-              <CrystalButton3 title="Save" onPress={handleSaveReview} />
+              <TouchableOpacity style={styles.saveButton} onPress={handleSaveReview}>
+                <Text style={styles.saveButtonText}>Save</Text>
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -130,9 +133,9 @@ const Review = ({ route, navigation }) => {
             <View style={styles.profileContainer}>
               <Image
                 style={styles.tinyLogo}
-                source={profile}
+                source={userData.profileImage ? { uri: userData.profileImage } : profile}
               />
-              <Text style={styles.username}>{`${username}`}</Text>
+              <Text style={styles.username}>{userData.username}</Text>
             </View>
             <TextInput
               style={styles.input}
@@ -140,7 +143,6 @@ const Review = ({ route, navigation }) => {
               placeholderTextColor="white"
               value={reviewText}
               onChangeText={setReviewText}
-              marginBottom={26}
             />
           </View>
         </View>
@@ -182,6 +184,7 @@ const styles = StyleSheet.create({
   },
   heading1: {
     fontFamily: 'ModernAntiquaRegular',
+
     fontSize: 19,
     color: 'white',
   },
@@ -280,6 +283,28 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 10,
   },
+  saveButton: {
+    marginLeft: 80,
+      borderRadius: 15,
+      padding: 10,
+      borderWidth: 3,
+      borderColor: '#CDF2FA', // Fantasy-themed border color
+      backgroundColor: '#745BB6', // Your button color
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.23,
+      shadowRadius: 2.62,
+      elevation: 4,
+      overflow: 'hidden',
+    },
+    saveButtonText: {
+      color: '#FFF',
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
   readMoreText: {
     color: '#CDF2FA',
     marginTop: 5,

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import profile from '../../assets/profile.jpg';
+import crest from '../../assets/Crest.png';
 import { doc, collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../../firebase';
 
@@ -120,9 +121,14 @@ const DetailsScreen = ({ route, navigation }) => {
               <View style={styles.profileContainer}>
                 <Image
                   style={styles.tinyLogo}
-                  source={profile}
+                  source={review.userImage ? { uri: review.userImage } : profile}
                 />
                 <Text style={styles.username}>{review.username}</Text>
+                {/* <Image
+                  style={styles.tinyLogo2}
+                  source={crest}
+                /> */}
+                
               </View>
               <Text style={styles.reviewDescription}>
                 {expandedReviews[review.id] ? review.text : `${review.text.substring(0, 100)}...`}

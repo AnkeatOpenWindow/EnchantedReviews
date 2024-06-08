@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image, Button } from 'react-native';
 import { auth, db } from '../../firebase';
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import profile from '../../assets/profile.jpg';
+import * as ImagePicker from 'expo-image-picker';
+import { handleUpLoadOfImage } from '../services/BucketService'; // Ensure the correct path to BucketService
+import CrystalButton from '../component/CrystalButton';
+import CrystalButton3 from '../component/CrystalButton3';
 
 const SettingScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
-
+  const [image, setImage] = useState(null);
+  const [imageUri, setImageUri] = useState(null); // For displaying the uploaded image
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -19,6 +23,7 @@ const SettingScreen = ({ navigation }) => {
           if (userDoc.exists()) {
             setUsername(userDoc.data().username);
             setEmail(user.email);
+            setImageUri(userDoc.data().imageUrl || null); // Set the image URL if it exists
           }
         } else {
           console.log("No user logged in.");
@@ -31,6 +36,33 @@ const SettingScreen = ({ navigation }) => {
     fetchUserData();
   }, []);
 
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
+  const uploadImage = async () => {
+    const user = auth.currentUser;
+    if (user && image) {
+      const fileName = `${user.uid}_${Date.now()}`;
+      await handleUpLoadOfImage(user.uid, image, fileName);
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (userDoc.exists()) {
+        setImageUri(userDoc.data().imageUrl || null); // Set the image URL if it exists
+        setImage(null); // Clear the selected image to hide the preview
+      }
+    } else {
+      alert("Please select an image.");
+    }
+  };
 
   const handleNavigateToHomeScreen = () => {
     navigation.navigate('Home');
@@ -49,8 +81,20 @@ const SettingScreen = ({ navigation }) => {
         <View style={styles.box1}>
           <Image
             style={styles.tinyLogo}
-            source={profile}
+            source={imageUri ? { uri: imageUri } : require('../../assets/profile.jpg')}
           />
+
+          <CrystalButton title="Pick an image from camera roll" onPress={pickImage} />
+          {image && !imageUri && <Image source={{ uri: image }} style={styles.image} />}
+
+          <TouchableOpacity
+            style={[styles.button, !image && styles.buttonDisabled]}
+            onPress={uploadImage}
+            disabled={!image}
+          >
+            <Text style={styles.buttonText}>Save Image</Text>
+          </TouchableOpacity>
+
           <View style={styles.innerBox}>
             <Text style={[styles.heading2, { paddingBottom: 5 }]}>
               {`Username: ${username}`}
@@ -122,11 +166,44 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     borderRadius: 100, // Half of the width and height to make it circular
+    marginBottom: 10,
   },
   profileImage: {
     width: 150,
     height: 150,
     borderRadius: 100, // Half of the width and height to make it circular
+  },
+  button: {
+    marginTop: 10,
+    marginBottom: 10,
+    borderRadius: 15,
+    padding: 10,
+    borderWidth: 3,
+    borderColor: '#CDF2FA', // Fantasy-themed border color
+    backgroundColor: '#745BB6', // Your button color
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
+    overflow: 'hidden',
+  },
+  buttonDisabled: {
+    backgroundColor: "gray",
+  },
+  buttonText: {
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  image: {
+    width: 200,
+    height: 200,
+    marginTop: 30
   },
 });
 
