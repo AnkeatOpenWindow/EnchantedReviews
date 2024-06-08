@@ -25,11 +25,15 @@ const DetailsScreen = ({ route, navigation }) => {
         ...doc.data(),
         votes: doc.data().votes || 0,
       }));
+
+      // Sort reviews by votes in descending order
+      reviewsData.sort((a, b) => b.votes - a.votes);
+
       setReviews(reviewsData);
 
       // Find the review with the highest number of votes for this book
       if (reviewsData.length > 0) {
-        const maxVotesReviewData = reviewsData.reduce((prev, current) => (prev.votes > current.votes) ? prev : current);
+        const maxVotesReviewData = reviewsData[0]; // The first review after sorting
         setMaxVotesReview(maxVotesReviewData);
       } else {
         setMaxVotesReview(null);
