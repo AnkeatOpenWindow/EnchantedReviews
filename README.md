@@ -3,37 +3,26 @@
 <!-- Repository Information & Links-->
 <br />
 
-![GitHub repo size](https://img.shields.io/github/repo-size/username/projectname?color=%000000)
-![GitHub watchers](https://img.shields.io/github/watchers/username/projectname?color=%000000)
-![GitHub language count](https://img.shields.io/github/languages/count/username/projectname?color=%000000)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/username/projectname?color=%000000)
-[![LinkedIn][linkedin-shield]][linkedin-url]
-[![Instagram][instagram-shield]][instagram-url]
-[![Behance][behance-shield]][behance-url]
-
 <!-- HEADER SECTION -->
-<h5 align="center" style="padding:0;margin:0;">Your Name & Surname</h5>
-<h5 align="center" style="padding:0;margin:0;">Student Number</h5>
-<h6 align="center">Subject Name & Year</h6>
+<h5 align="center" style="padding:0;margin:0;">Anke Du Raan</h5>
+<h5 align="center" style="padding:0;margin:0;">221202</h5>
+<h6 align="center">DV 300</h6>
 </br>
 <p align="center">
 
-  <a href="https://github.com/username/projectname">
-    <img src="path/to/logo" alt="Logo" width="140" height="140">
+  <a href="https://github.com/AnkeatOpenWindow/EnchantedReviews.git">
+    <img src="./assets/Logo.png" alt="Logo" width="140" >
   </a>
   
-  <h3 align="center">Project Name</h3>
+  <h3 align="center">EnchantedReviews</h3>
 
   <p align="center">
-    Short Project Slogan / Description <br>
-      <a href="https://github.com/username/projectname"><strong>Explore the docs »</strong></a>
+    The app that allows a users to write a review on anything that has genre of fiction  <br>
+      <a href="https://github.com/AnkeatOpenWindow/EnchantedReviews.git"><strong>Explore the docs »</strong></a>
    <br />
    <br />
    <a href="path/to/demonstration/video">View Demo</a>
     ·
-    <a href="https://github.com/username/projectname/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/username/projectname/issues">Request Feature</a>
 </p>
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
@@ -70,17 +59,19 @@
 <!--PROJECT DESCRIPTION-->
 ## About the Project
 <!-- header image of project -->
-![image1][image1]
+<img src="./assets/Logo.png" alt="Logo" width="140" >
 
 ### Project Description
 
-A nice introduction to this amazing project of mine.
+This app allows users to login or create an account where they'll be able to view current competitions that are going on. Once a users taps on a competion they are taken to the competiion screen where they can see the items, like books or online games, that that can write a review on and post it so that everyone else with an account can see. Then users can like what review they like and the review with the most links gets a crest next to the username of the person who wrote that review.
 
 ### Built With
 
-* [Technology Name](path/to/technology/website)
-* [Technology Name](path/to/technology/website)
-* [Technology Name](path/to/technology/website)
+* [React Native](https://reactnative.dev/)
+* [Node.js](https://nodejs.org/en)
+* [React](https://react.dev/)
+* [Firebase](https://firebase.google.com/)
+* [Expo go](https://docs.expo.dev/)
 
 <!-- GETTING STARTED -->
 <!-- Make sure to add appropriate information about what prerequesite technologies the user would need and also the steps to install your project on their own mashines -->
@@ -90,56 +81,78 @@ The following instructions will get you a copy of the project up and running on 
 
 ### Prerequisites
 
-Ensure that you have the latest version of [Software](path/to/where/they/can/download/software) installed on your machine. The [Plugin](path/to/where/they/can/download/plugin) plugin will also be required.
+Ensure that you have the latest version of [Node.js](https://nodejs.org/en) installed on your machine.
 
 ### How to install
 
 ### Installation
 Here are a couple of ways to clone this repo:
 
-1. Software </br>
-`Android Studio` -> `File` -> `New` -> `From Version Control` -> `Git`</br>
-Enter `https://github.com/username/projectname.git` into the URL field and press the `Clone` button.
-
-2. Clone Repository </br>
+1. Clone Repository </br>
 Run the following in the command-line to clone the project:
    ```sh
-   git clone https://github.com/username/projectname.git
+   git clone https://github.com/AnkeatOpenWindow/EnchantedReviews.git
    ```
-    Open `Software` and select `File | Open...` from the menu. Select cloned directory and press `Open` button
-
+2. Navigate to the Project Directory
+Once the repository is cloned, navigate into the project directory:
+   ```sh
+   cd EnchantedReviews
+   ```
 3. Install Dependencies </br>
 Run the following in the command-line to install all the required dependencies:
    ```sh
    npm install
    ```
-
-4. Get a free API Key at [https://example.com](https://example.com) and enter it in the `config.js` file:
-   ```js
-   const API_KEY = 'ENTER YOUR API';
+4. Install React Native CLI
+If you haven't already, you need to install the React Native CLI globally
+   ```sh
+   npm install -g react-native-cli
    ```
+5. Start the Expo Development Server
+Start the Expo development server by running:
+   ```sh
+   expo start
+   ```
+6: Running the App with Expo Go
 
+  6.1 Download and install the Expo Go app from the App Store (iOS) or Google Play Store (Android) on your mobile device.
+  
+  6.2 Open the Expo Go app on your device.
+  
+  6.3 In the Expo Dev Tools in your browser, you will see a QR code. Scan this QR code using the Expo Go app.
+  
+  * For iOS: Use the camera app to scan the QR code.
+  * For Android: Use the built-in QR code scanner in the Expo Go app.
+  * The app should now load and run on your device.
 
 <!-- FEATURES AND FUNCTIONALITY-->
 <!-- You can add the links to all of your imagery at the bottom of the file as references -->
 ## Features and Functionality
 
 ![image2][image2]
-### Feature 1
+### Feature 1: Login or create an account
 
-Description of Feature
+If the users is new they can create an account by in the sign up screen or they can login with their email and password if they have an account
 
 ![image3][image3]
-### Feature 2
+### Feature 2: View current competitions
 
-Description of Feature
+On the home screen all current competions, with the name, time it starts and ends, will shown. When they tap on the competition it will taken them to the competition screen where the instructions are given with the items, for exmaple books, on which the users can write reviews on.
 
 ![image4][image4]
-### Feature 3
+### Feature 3: Voting for reviews on an item
 
-Description of Feature
+If the user taps on the heart icon of the review it will add a vote to the review. The review with the most votes will apear at the top of the list with a crest next tp the username of the person who wrote the review. However a user can only for for a review ones and not for any reviews they have written.
 
-![image5][image5]
+![image4][image4]
+### Feature 4: Writing you own review.
+
+If the user taps on the plus con icon they will be rirected to the screen where they can write their own review and post it. Which will then show along side the other reviews.
+
+![image4][image4]
+### Feature 5: Edit you profile image.
+
+On the settings screen the user can view their username, email and profile image. If the user had just created an account their profile image will be the default image that has been preset. But if the user taps on the "Pick an image from your camara roll" button it will allow the user to pick the image they want. Once the image has been selected the "Save image" button that image will be saved as their profile image and display where the default profile image was before.
 
 
 <!-- CONCEPT PROCESS -->
@@ -170,43 +183,30 @@ The `Development Process` is the technical implementations and functionality don
 ### Implementation Process
 <!-- stipulate all of the functionality you included in the project -->
 
-* Made use of both `functionality` to implement a specific feature.
-* `MVC/MVVM` design architecture implemented.
-* `Plugin` for this.
-* ETC.
+* When a user signs up/create an account their email, password and username is saved to authentication and to firestore database
+* Show all the competions a user can visit and take part in
+* Show a leader board to show who had the most votes
+* Show all the items a user can write a review on
+* Allow a user to be able to write a review and save it to firestore database
 
 #### Highlights
 <!-- stipulated the highlight you experienced with the project -->
-* Sunshine.
-* Rainbows.
+* See who is in the lead with the help of live data from firestore.
+* See the voting update with the help of live data.
 
 #### Challenges
 <!-- stipulated the challenges you faced with the project and why you think you faced it or how you think you'll solve it (if not solved) -->
-* Bugs.
-* Bugs.
+* Struged to get the imapge picket to work and save the image to firestore cloud and have it saved to the user who uploaded the image but manged to fix the bug.
 
 ### Reviews & Testing
 <!-- stipulate how you've conducted testing in the form of peer reviews, feedback and also functionality testing, like unit tests (if applicable) -->
-
-#### Feedback from Reviews
-
-`Peer Reviews` were conducted by my fellow students and lecturer. The following feedback I found useful:
-
-* Feedback one.
-* Feedback two.
-
-#### Unit Tests
-
-`Unit Tests` were conducted to establish working functionality. Here are all the tests that were ran:
-
-* Test 1 of this functionality
-* Test 2 of this functionality
+* Tested using dummy users.
+* Got feedback from my lecturer 
 
 ### Future Implementation
 <!-- stipulate functionality and improvements that can be implemented in the future. -->
 
-* Future 1.
-* Future 2.
+* Future 1: count down on the home screen for each of the competion to show when a competion is going to end or begin.
 
 <!-- MOCKUPS -->
 ## Final Outcome
@@ -224,26 +224,10 @@ To see a run through of the application, click below:
 
 [View Demonstration](path/to/video/demonstration)
 
-<!-- ROADMAP -->
-## Roadmap
-
-See the [open issues](https://github.com/username/projectname/issues) for a list of proposed features (and known issues).
-
-<!-- CONTRIBUTING -->
-## Contributing
-
-Contributions are what makes the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
 <!-- AUTHORS -->
 ## Authors
 
-* **Your Name & Surname** - [username](https://github.com/username)
+* **Anke Du Raan** - [AnkeatOpenWindow](https://github.com/AnkeatOpenWindow)
 
 <!-- LICENSE -->
 ## License
@@ -253,17 +237,16 @@ Distributed under the MIT License. See `LICENSE` for more information.\
 <!-- LICENSE -->
 ## Contact
 
-* **Your Name & Surname** - [email@address](mailto:email@address) - [@instagram_handle](https://www.instagram.com/instagram_handle/) 
-* **Project Link** - https://github.com/username/projectname
+* **Anke Du Raan** - [anke12345du@gmail.com](anke12345du@gmail.com)
+* **Project Link** - [https://github.com/AnkeatOpenWindow/EnchantedReviews](https://github.com/AnkeatOpenWindow/EnchantedReviews.git)
 
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
 <!-- all resources that you used and Acknowledgements here -->
-* [Resource Name](path/to/resource)
-* [Resource Name](path/to/resource)
-* [Resource Name](path/to/resource)
-* [Resource Name](path/to/resource)
-* [Resource Name](path/to/resource)
+* [React Native documentation](https://reactnative.dev/docs/environment-setup)
+* [Expo go documentation](https://docs.expo.dev/)
+* [ChatGPT](https://openai.com/index/chatgpt/)
+* [Firestore documentation](https://firebase.google.com/docs/firestore)
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
@@ -277,12 +260,3 @@ Distributed under the MIT License. See `LICENSE` for more information.\
 [image8]: /path/to/image.png
 [image9]: /path/to/image.png
 [image10]: /path/to/image.png
-
-
-<!-- Refer to https://shields.io/ for more information and options about the shield links at the top of the ReadMe file -->
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
-[linkedin-url]: https://www.linkedin.com/in/nameonlinkedin/
-[instagram-shield]: https://img.shields.io/badge/-Instagram-black.svg?style=flat-square&logo=instagram&colorB=555
-[instagram-url]: https://www.instagram.com/instagram_handle/
-[behance-shield]: https://img.shields.io/badge/-Behance-black.svg?style=flat-square&logo=behance&colorB=555
-[behance-url]: https://www.behance.net/name-on-behance/
