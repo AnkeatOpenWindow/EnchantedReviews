@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from 'react-native';
-import CrystalButton3 from '../component/CrystalButton3';
 import { handleLogout } from '../services/authService';
 import { db } from '../../firebase';
 import Logo from '../../assets/Logo.png';
-import write from '../../assets/write.jpg';
 import { auth } from '../../firebase';
 import { doc, collection, getDoc, getDocs } from "firebase/firestore";
 
@@ -12,24 +10,30 @@ import { doc, collection, getDoc, getDocs } from "firebase/firestore";
 const HomeScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [competitions, setCompetitions] = useState([]);
+  const [imageUri, setImageUri] = useState(null); // For displaying the user's profile image
+  const [image, setImage] = useState(null); // For managing the selected image (if needed)
 
   useEffect(() => {
-    const fetchUsername = async () => {
+    const fetchUserData = async () => {
       try {
         const user = auth.currentUser;
         if (user) {
           const userDoc = await getDoc(doc(db, 'users', user.uid));
           if (userDoc.exists()) {
             setUsername(userDoc.data().username);
+            setImageUri(userDoc.data().imageUrl || null); // Set the image URL if it exists, otherwise null
+          } else {
+            console.log("User document does not exist.");
           }
         } else {
           console.log("No user logged in.");
         }
       } catch (error) {
-        console.error('Error fetching username:', error);
+        console.error('Error fetching user data:', error);
       }
     };
-    fetchUsername();
+
+    fetchUserData();
   }, []);
 
   useEffect(() => {
@@ -45,18 +49,13 @@ const HomeScreen = ({ navigation }) => {
     fetchCompetitions();
   }, []);
 
-  const onLogout = () => {
-    handleLogout()
-      .then(() => {
-        navigation.navigate('LoginScreen');
-      })
-      .catch((error) => {
-        console.error('Error signing out: ', error);
-      });
-  };
-
+  
   const handleNavigateToCompetitionScreen = () => {
     navigation.navigate('Competition');
+  };
+
+  const handleNavigateToSettingsScreen = () => {
+    navigation.navigate('Profile');
   };
 
   return (
@@ -69,8 +68,13 @@ const HomeScreen = ({ navigation }) => {
             resizeMode="contain"
           />
           <Text style={styles.heading6}>EnchantedReviews</Text>
-          <View style={styles.buttonContainer}>
-            <CrystalButton3 title="Sign Out" onPress={onLogout} />
+          <View >
+            <TouchableOpacity onPress={handleNavigateToSettingsScreen}>
+              <Image
+                style={styles.tinyLogo}
+                source={imageUri ? { uri: imageUri } : profileImage}
+              />
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -85,6 +89,7 @@ const HomeScreen = ({ navigation }) => {
         </View>
 
         <Text style={styles.headings2}>Competitions</Text>
+        {/*TODO: make it so that it shows that the current open competion is visable over one that isn't*/}
         {competitions.map((competition) => (
           <TouchableOpacity
             key={competition.id}
@@ -187,7 +192,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: '#745BB6',
     borderRadius: 10,
-    padding: 10,
+    paddingTop: 20,
+    paddingBottom: 20,
   },
   imageContainer: {
     alignItems: 'center',
@@ -197,7 +203,14 @@ const styles = StyleSheet.create({
     width: 320,
     height: 220,
     borderRadius: 20,
-  }
+  },
+  tinyLogo: {
+    width: 50,
+    height: 50,
+    borderRadius: 100, // Half of the width and height to make it circular
+    marginBottom: 10,
+    marginLeft: 120,
+  },
 });
 
 export default HomeScreen;

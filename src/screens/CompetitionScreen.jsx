@@ -6,6 +6,7 @@ import Logo from '../../assets/Logo.png';
 
 const CompetitionScreen = ({ navigation }) => {
   const [books, setBooks] = useState([]);
+  const [expandedPlot, setExpandedPlot] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'books'), (snapshot) => {
@@ -21,6 +22,10 @@ const CompetitionScreen = ({ navigation }) => {
 
   const handleNavigateToDetail = (book) => {
     navigation.navigate('Details', { book });
+  };
+
+  const handleToggleExpandPlot = () => {
+    setExpandedPlot(prevState => !prevState);
   };
 
   return (
@@ -68,8 +73,12 @@ const CompetitionScreen = ({ navigation }) => {
                   resizeMode="contain"
                 />
               </View>
+              {/*TODO: Add a short description for each book*/}
               <Text style={styles.body2} paddingBottom={5}>{book.title}</Text>
               <Text style={styles.body3}>{book.author}</Text>
+              <Text style={styles.body3} paddingBottom={10}>
+                description
+              </Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -167,7 +176,8 @@ const styles = StyleSheet.create({
   image2: {
     width: 150,
     height: 200,
-  }
+  },
+
 });
 
 export default CompetitionScreen;

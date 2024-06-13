@@ -161,6 +161,7 @@ const DetailsScreen = ({ route, navigation }) => {
           <View style={styles.horizontalLine}></View>
 
           <View style={styles.rowContainer}>
+            {/*TODO: Make a filter where user can choose to view the lastest review and the most voted*/}
             <Text style={styles.heading1}>Reviews</Text>
             <View style={styles.add}>
               <TouchableOpacity onPress={handleNavigateToReview}>

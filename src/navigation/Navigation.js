@@ -31,8 +31,8 @@ const HomeTabNavigator = () => {
 
           if (route.name === 'Home') {
             iconName = 'home-sharp';
-          } else if (route.name === 'Settings') {
-            iconName = 'settings-sharp';
+          } else if (route.name === 'Profile') {
+            iconName = 'person-sharp';
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
@@ -40,7 +40,7 @@ const HomeTabNavigator = () => {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Settings" component={SettingScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Profile" component={SettingScreen} options={{ headerShown: false }} />
       {/* Add CompetitionScreen as a nested screen */}
       <Tab.Screen name="Competition" component={CompetitionScreen} options={{ headerShown: false, tabBarButton: () => null }} />
       <Tab.Screen name="Details" component={DetailsScreen} options={{ headerShown: false, tabBarButton: () => null }} />

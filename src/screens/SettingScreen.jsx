@@ -6,6 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
 import { handleUpLoadOfImage } from '../services/BucketService'; // Ensure the correct path to BucketService
 import CrystalButton from '../component/CrystalButton';
+import { handleLogout } from '../services/authService';
 import CrystalButton3 from '../component/CrystalButton3';
 
 const SettingScreen = ({ navigation }) => {
@@ -68,6 +69,16 @@ const SettingScreen = ({ navigation }) => {
     navigation.navigate('Home');
   };
 
+  const onLogout = () => {//Move to settings screen and replace with profile image
+    handleLogout()
+      .then(() => {
+        navigation.navigate('LoginScreen');
+      })
+      .catch((error) => {
+        console.error('Error signing out: ', error);
+      });
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.scrollView}>
       <View style={styles.header}>
@@ -76,6 +87,9 @@ const SettingScreen = ({ navigation }) => {
             <Ionicons name="arrow-back" size={32} color="white" />
           </TouchableOpacity>
         </View>
+        <View style={styles.buttonContainer}>
+            <CrystalButton3 title="Sign Out" onPress={onLogout} />
+          </View>
       </View>
       <View style={styles.maincontainer}>
         <View style={styles.box1}>
@@ -204,6 +218,10 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     marginTop: 30
+  },
+  buttonContainer: {
+    marginLeft: 10,
+    backgroundColor: 'transparent',
   },
 });
 
