@@ -179,11 +179,23 @@ Baised on the brief requirements we had to choose an app that involved around a 
 
 ### Wireframes
 
-![image7][image7]
-
-### User-flow
-
-![image8][image8]
+<div style="display: flex; justify-content: space-between; align-items: flex-start;">
+  <img src="./assets/Wireframes/Splash.png" alt="Image 5" height="300" style="margin-right: 10px;">
+  <img src="./assets/Wireframes/Login.png" alt="Image 6" height="300" style="margin-right: 10px;">
+  <img src="./assets/Wireframes/Regester.png" alt="Image 6" height="300">
+</div>
+<br>
+<div style="display: flex; justify-content: space-between; align-items: flex-start;">
+  <img src="./assets/Wireframes/Home.png" alt="Image 6" height="300" style="margin-right: 10px;">
+  <img src="./assets/Wireframes/Competition.png" alt="Image 6" height="300" style="margin-right: 10px;">
+  <img src="./assets/Wireframes/Review1.png" alt="Image 5" height="300">
+</div>
+<br>
+<div style="display: flex; justify-content: space-between; align-items: flex-start;">
+  <img src="./assets/Wireframes/Review2.png" alt="Image 6" height="300" style="margin-right: 10px;">
+  <img src="./assets/Wireframes/Own.png" alt="Image 6" height="300" style="margin-right: 10px;">
+  <img src="./assets/Wireframes/Profile.png" alt="Image 6" height="300" style="margin-right: 10px;">
+</div>
 
 <!-- DEVELOPMENT PROCESS -->
 ## Development Process
@@ -207,6 +219,8 @@ The `Development Process` is the technical implementations and functionality don
 #### Challenges
 <!-- stipulated the challenges you faced with the project and why you think you faced it or how you think you'll solve it (if not solved) -->
 * Struged to get the imapge picket to work and save the image to firestore cloud and have it saved to the user who uploaded the image but manged to fix the bug.
+* Struggled to get the heart icon to change color when tapped and when tapped again to up and down vote.
+* Struggled to get the up and down voting.
 
 ### Reviews & Testing
 <!-- stipulate how you've conducted testing in the form of peer reviews, feedback and also functionality testing, like unit tests (if applicable) -->
@@ -247,7 +261,9 @@ The `Development Process` is the technical implementations and functionality don
 
 To see a run through of the application, click below:
 
-[View Demonstration](path/to/video/demonstration)
+<a href="https://drive.google.com/file/d/1UusvSPGxn4X1b71fbkst5Yv45hw0IzYY/view?usp=sharing">
+  <img src="./assets/Mockups/1.png" alt="Demo Video" width="300">
+</a>
 
 <!-- AUTHORS -->
 ## Authors
