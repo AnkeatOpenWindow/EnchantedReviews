@@ -1,26 +1,35 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, Image, TextInput, Animated } from 'react-native';
+import { View, StyleSheet, Text, TextInput, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { handleLogin } from '../services/authService';
 import CrystalButton from '../component/CrystalButton';
 import CrystalButton2 from '../component/CrystalButton2';
 import ShimmerImage from '../component/ShimmerImage';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { handleLogin } from '../services/authService';
-
-//TODO: make is that if the app reloads the users stays logged in untill signed out usin button on homescreen
 
 const LoginScreen = () => {
   const navigation = useNavigation();
-
-  const navigateToRegister = () => {
-    navigation.navigate('Register'); // Ensure this matches the registered screen name
-  };
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(null); // State to hold error message
 
   const login = () => {
-    handleLogin(email, password);
-  }
+    handleLogin(email, password)
+      .then((result) => {
+        if (result.success) {
+          // Navigate to another screen upon successful login if needed
+          navigation.navigate('Home');
+        } else {
+          // Handle login failure
+          setError(result.error);
+          Alert.alert('Sorry your email/password is concorect, please try again'); // Optional: show an alert
+        }
+      })
+      .catch((error) => {
+        console.error('Error during login:', error);
+        setError('An error occurred. Please try again.'); // Handle unexpected errors
+      });
+  };
 
 
 

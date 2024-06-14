@@ -9,12 +9,12 @@ export const handleLogin = (email, password) => {
   return signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const user = userCredential.user;
-      console.log("Logged In User: " + user.email);
       AsyncStorage.setItem('user', JSON.stringify(user)); // Store user info in AsyncStorage
+      return { success: true, user };
     })
     .catch((error) => {
       const errorMessage = error.message;
-      console.log(errorMessage);
+      return { success: false, error: errorMessage };
     });
 }
 
