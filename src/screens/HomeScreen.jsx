@@ -14,26 +14,25 @@ const HomeScreen = ({ navigation }) => {
   const [image, setImage] = useState(null); // For managing the selected image (if needed)
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const user = auth.currentUser;
-        if (user) {
-          const userDoc = await getDoc(doc(db, 'users', user.uid));
-          if (userDoc.exists()) {
-            setUsername(userDoc.data().username);
-            setImageUri(userDoc.data().imageUrl || null); // Set the image URL if it exists
-          } else {
-            console.log("User document does not exist.");
-          }
-        } else {
-          console.log("No user logged in.");
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
+    const user = auth.currentUser;
+    if (!user) {
+      console.log("No user logged in.");
+      return;
+    }
+  
+    const unsubscribe = doc(db, 'users', user.uid).onSnapshot((doc) => {
+      if (doc.exists()) {
+        setUsername(doc.data().username);
+        setImageUri(doc.data().imageUrl || null);
+      } else {
+        console.log("User document does not exist.");
+        setUsername('');
+        setImageUri(null);
       }
-    };
-
-    fetchUserData();
+    });
+  
+    // Clean up the listener on unmount
+    return () => unsubscribe();
   }, []);
 
   useEffect(() => {
