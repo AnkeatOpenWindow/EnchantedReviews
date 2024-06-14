@@ -3,13 +3,12 @@ import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, Alert } fr
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import profile from '../../assets/profile.jpg';
 import crest from '../../assets/Crest.png';
-import { doc, collection, onSnapshot, updateDoc, getDoc, increment } from 'firebase/firestore';
+import { doc, collection, onSnapshot, updateDoc, getDoc, increment, decrement } from 'firebase/firestore';
 import { db, auth } from '../../firebase';
 
 const DetailsScreen = ({ route, navigation }) => {
   const { book } = route.params;
   const [reviews, setReviews] = useState([]);
-  const [isFilled, setIsFilled] = useState(false);
   const [expandedReviews, setExpandedReviews] = useState({});
   const [expandedPlot, setExpandedPlot] = useState(false);
   const [votedReviews, setVotedReviews] = useState(new Set());
@@ -25,6 +24,7 @@ const DetailsScreen = ({ route, navigation }) => {
         id: doc.id,
         ...doc.data(),
         votes: doc.data().votes || 0,
+        votedByCurrentUser: votedReviews.has(doc.id) // Check if user has voted for this review
       }));
 
       // Determine the review with the maximum votes
@@ -48,13 +48,28 @@ const DetailsScreen = ({ route, navigation }) => {
     });
 
     return () => unsubscribe();
-  }, [book.id, filter]);
+  }, [book.id, filter, votedReviews]);
 
   useEffect(() => {
-    setExpandedReviews({});
-    setVotedReviews(new Set());
+    loadUserVotedReviews();
     setMaxVotesReviewId(null);
   }, [book.id]);
+
+  const loadUserVotedReviews = async () => {
+    try {
+      const userDocRef = doc(db, 'users', auth.currentUser.uid);
+      const userDocSnapshot = await getDoc(userDocRef);
+      const userData = userDocSnapshot.data();
+
+      if (userData && userData.votedReviews) {
+        setVotedReviews(new Set(userData.votedReviews));
+      } else {
+        setVotedReviews(new Set());
+      }
+    } catch (error) {
+      console.error('Error loading user voted reviews:', error);
+    }
+  };
 
   const handleToggleExpandReview = (id) => {
     setExpandedReviews(prevState => ({
@@ -75,21 +90,24 @@ const DetailsScreen = ({ route, navigation }) => {
     navigation.navigate('Competition');
   };
 
-  const toggleHeart = () => {
-    setIsFilled(prevState => !prevState);
-  };
 
   const handleVote = async (reviewId, userId) => {
-    if (!votedReviews.has(reviewId)) {
-      try {
-        const userDocRef = doc(db, 'users', auth.currentUser.uid);
-        const userDocSnapshot = await getDoc(userDocRef);
-        const userData = userDocSnapshot.data();
+    try {
+      const userDocRef = doc(db, 'users', auth.currentUser.uid);
+      const userDocSnapshot = await getDoc(userDocRef);
+      const userData = userDocSnapshot.data();
 
-        if (userData && userData.votedReviews && userData.votedReviews.includes(reviewId)) {
-          throw new Error('You have already voted for this review.');
-        }
+      if (votedReviews.has(reviewId)) {
+        // User already voted, so we remove the vote
+        const reviewDocRef = doc(db, 'books', book.id, 'reviews', reviewId);
+        await updateDoc(reviewDocRef, { votes: increment(-1) });
 
+        const updatedVotedReviews = new Set(votedReviews);
+        updatedVotedReviews.delete(reviewId);
+        setVotedReviews(updatedVotedReviews);
+
+      } else {
+        // User has not voted, so we add the vote
         if (auth.currentUser.uid === userId) {
           throw new Error('You cannot vote for your own review.');
         }
@@ -97,18 +115,12 @@ const DetailsScreen = ({ route, navigation }) => {
         const reviewDocRef = doc(db, 'books', book.id, 'reviews', reviewId);
         await updateDoc(reviewDocRef, { votes: increment(1) });
 
-        const updatedVotedReviews = userData.votedReviews ? [...userData.votedReviews, reviewId] : [reviewId];
-        await updateDoc(userDocRef, { votedReviews: updatedVotedReviews });
-
-        setReviews(prevState =>
-          prevState.map(review => review.id === reviewId ? { ...review, votes: review.votes + 1 } : review)
-        );
-        setVotedReviews(prevState => new Set(prevState.add(reviewId)));
-      } catch (error) {
-        Alert.alert(error.message);
+        const updatedVotedReviews = new Set(votedReviews);
+        updatedVotedReviews.add(reviewId);
+        setVotedReviews(updatedVotedReviews);
       }
-    } else {
-      Alert.alert('You have already voted for this review.');
+    } catch (error) {
+      Alert.alert(error.message);
     }
   };
 
@@ -205,12 +217,18 @@ const DetailsScreen = ({ route, navigation }) => {
                   style={styles.readMoreText}
                   onPress={() => handleToggleExpandReview(review.id)}
                 >
-                  {expandedReviews[review.id] ? ' Read Less' : ' Read More'}
+                  {expandedReviews[review                .id] ? ' Read Less' : ' Read More'}
                 </Text>
               </Text>
               <View style={styles.voteContainer}>
-                <TouchableOpacity onPress={() => handleVote(review.id, review.userId)}>
-                  <Ionicons name="heart-outline" size={32} color={isFilled ? '#CDF2FA' : 'white'} marginTop={10} marginRight={10} />
+              <TouchableOpacity onPress={() => handleVote(review.id, review.userId)}>
+                  <Ionicons
+                    name="heart"
+                    size={32}
+                    color={review.votedByCurrentUser ? '#CDF2FA' : 'white'} // Adjust color based on votedByCurrentUser
+                    marginTop={10}
+                    marginRight={10}
+                  />
                 </TouchableOpacity>
                 <Text style={styles.body} paddingTop={10}>{review.votes}</Text>
               </View>
@@ -379,7 +397,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#745BB6',
     borderRadius: 5,
     marginHorizontal: 5,
-
   },
   filterText: {
     color: 'white',
@@ -388,3 +405,4 @@ const styles = StyleSheet.create({
 });
 
 export default DetailsScreen;
+
