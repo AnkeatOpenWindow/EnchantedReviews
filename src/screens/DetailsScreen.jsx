@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, Alert } fr
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import profile from '../../assets/profile.jpg';
 import crest from '../../assets/Crest.png';
-import { doc, collection, onSnapshot, updateDoc, getDoc, arrayUnion, increment } from 'firebase/firestore';
+import { doc, collection, onSnapshot, updateDoc, getDoc, increment } from 'firebase/firestore';
 import { db, auth } from '../../firebase';
 
 const DetailsScreen = ({ route, navigation }) => {
@@ -13,7 +13,8 @@ const DetailsScreen = ({ route, navigation }) => {
   const [expandedReviews, setExpandedReviews] = useState({});
   const [expandedPlot, setExpandedPlot] = useState(false);
   const [votedReviews, setVotedReviews] = useState(new Set());
-  const [maxVotesReview, setMaxVotesReview] = useState(null);
+  const [filter, setFilter] = useState('mostVoted');
+  const [maxVotesReviewId, setMaxVotesReviewId] = useState(null);
 
   useEffect(() => {
     const bookDocRef = doc(db, 'books', book.id);
@@ -26,27 +27,33 @@ const DetailsScreen = ({ route, navigation }) => {
         votes: doc.data().votes || 0,
       }));
 
-      // Sort reviews by votes in descending order
-      reviewsData.sort((a, b) => b.votes - a.votes);
+      // Determine the review with the maximum votes
+      if (reviewsData.length > 0) {
+        const maxVotesReviewData = reviewsData.reduce((maxReview, currentReview) =>
+          currentReview.votes > maxReview.votes ? currentReview : maxReview, reviewsData[0]
+        );
+        setMaxVotesReviewId(maxVotesReviewData.id);
+      } else {
+        setMaxVotesReviewId(null);
+      }
+
+      // Sort reviews based on the selected filter
+      if (filter === 'mostVoted') {
+        reviewsData.sort((a, b) => b.votes - a.votes);
+      } else if (filter === 'latest') {
+        reviewsData.sort((a, b) => b.createdAt - a.createdAt);
+      }
 
       setReviews(reviewsData);
-
-      // Find the review with the highest number of votes for this book
-      if (reviewsData.length > 0) {
-        const maxVotesReviewData = reviewsData[0]; // The first review after sorting
-        setMaxVotesReview(maxVotesReviewData);
-      } else {
-        setMaxVotesReview(null);
-      }
     });
 
     return () => unsubscribe();
-  }, [book.id]);
+  }, [book.id, filter]);
 
   useEffect(() => {
     setExpandedReviews({});
     setVotedReviews(new Set());
-    setMaxVotesReview(null);
+    setMaxVotesReviewId(null);
   }, [book.id]);
 
   const handleToggleExpandReview = (id) => {
@@ -161,7 +168,6 @@ const DetailsScreen = ({ route, navigation }) => {
           <View style={styles.horizontalLine}></View>
 
           <View style={styles.rowContainer}>
-            {/*TODO: Make a filter where user can choose to view the lastest review and the most voted*/}
             <Text style={styles.heading1}>Reviews</Text>
             <View style={styles.add}>
               <TouchableOpacity onPress={handleNavigateToReview}>
@@ -169,7 +175,14 @@ const DetailsScreen = ({ route, navigation }) => {
               </TouchableOpacity>
             </View>
           </View>
-
+          <View style={styles.filterContainer}>
+            <TouchableOpacity onPress={() => setFilter('mostVoted')} style={filter === 'mostVoted' ? styles.activeFilter : styles.filter}>
+              <Text style={styles.filterText}>Most Voted</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setFilter('latest')} style={filter === 'latest' ? styles.activeFilter : styles.filter}>
+              <Text style={styles.filterText}>Latest</Text>
+            </TouchableOpacity>
+          </View>
           {/* Reviews Section */}
           {reviews.map(review => (
             <View key={review.id} style={styles.box1} marginTopTop={20}>
@@ -179,7 +192,7 @@ const DetailsScreen = ({ route, navigation }) => {
                   source={review.userImage ? { uri: review.userImage } : profile}
                 />
                 <Text style={styles.username}>{review.username}</Text>
-                {maxVotesReview && review.id === maxVotesReview.id && (
+                {maxVotesReviewId === review.id && (
                   <Image
                     style={styles.tinyLogo2}
                     source={crest}
@@ -251,7 +264,7 @@ const styles = StyleSheet.create({
     fontWeight: 'semibold',
   },
   body2: {
-    fontSize: 19,
+    fontSize: 24,
     color: 'white',
     marginTop: 10,
   },
@@ -349,6 +362,28 @@ const styles = StyleSheet.create({
     color: '#CDF2FA',
     marginTop: 5,
     textDecorationLine: 'underline',
+  },
+  filterContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
+  filter: {
+    padding: 10,
+    backgroundColor: '#AD91F6',
+    borderRadius: 5,
+    marginHorizontal: 5,
+  },
+  activeFilter: {
+    padding: 10,
+    backgroundColor: '#745BB6',
+    borderRadius: 5,
+    marginHorizontal: 5,
+
+  },
+  filterText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
 

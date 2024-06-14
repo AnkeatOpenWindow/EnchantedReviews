@@ -6,13 +6,13 @@ import Logo from '../../assets/Logo.png';
 
 const CompetitionScreen = ({ navigation }) => {
   const [books, setBooks] = useState([]);
-  const [expandedPlot, setExpandedPlot] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'books'), (snapshot) => {
       const booksData = snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
+        expanded: false, // Add expanded state for each book
       }));
       setBooks(booksData);
     });
@@ -24,8 +24,10 @@ const CompetitionScreen = ({ navigation }) => {
     navigation.navigate('Details', { book });
   };
 
-  const handleToggleExpandPlot = () => {
-    setExpandedPlot(prevState => !prevState);
+  const toggleDescription = (index) => {
+    const newBooks = [...books];
+    newBooks[index].expanded = !newBooks[index].expanded;
+    setBooks(newBooks);
   };
 
   return (
@@ -48,23 +50,23 @@ const CompetitionScreen = ({ navigation }) => {
               Here you can pick your favorite book and write your very own review about them.
             </Text>
             <Text style={styles.body} paddingBottom={5}>
-              Then have other people vote on who has the best review on a spesfic book.
+              Then have other people vote on who has the best review on a specific book.
             </Text>
             <Text style={styles.body} paddingBottom={5}>
               You can vote for as many as you want, but not for yourself, no-no, that's cheating.
             </Text>
             <Text style={styles.body} paddingBottom={5}>
-              The user with the highest voted review will resieve a spesial badge next to their names.
+              The user with the highest voted review will receive a special badge next to their names.
             </Text>
             <Text style={styles.body} paddingBottom={5}>
-              What to know what the badge looks like? Then you'll just have to win and see for yourself.
+              Want to know what the badge looks like? Then you'll just have to win and see for yourself.
             </Text>
           </View>
         </View>
 
         <Text style={styles.headings2}>Books for reviewing</Text>
         <View style={styles.booksContainer}>
-          {books.map((book) => (
+          {books.map((book, index) => (
             <TouchableOpacity key={book.id} style={styles.card} onPress={() => handleNavigateToDetail(book)}>
               <View style={styles.imageContainer}>
                 <Image
@@ -73,12 +75,16 @@ const CompetitionScreen = ({ navigation }) => {
                   resizeMode="contain"
                 />
               </View>
-              {/*TODO: Add a short description for each book*/}
               <Text style={styles.body2} paddingBottom={5}>{book.title}</Text>
               <Text style={styles.body3}>{book.author}</Text>
-              <Text style={styles.body3} paddingBottom={10}>
-                description
+              <Text style={styles.body3} numberOfLines={book.expanded ? undefined : 3} ellipsizeMode="tail" paddingBottom={10}>
+                {book.description}
               </Text>
+              {book.expanded ? (
+                <Text style={styles.readLessLink} onPress={() => toggleDescription(index)}>Read less</Text>
+              ) : (
+                <Text style={styles.readMoreLink} onPress={() => toggleDescription(index)}>Read more</Text>
+              )}
             </TouchableOpacity>
           ))}
         </View>
@@ -93,7 +99,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#AD91F6",
   },
   maincontainer: {
-    marginTop: 45,
+    paddingTop: 25,
     marginLeft: 20,
     marginRight: 20,
   },
@@ -105,14 +111,14 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontFamily: 'ModernAntiquaRegular',
     fontSize: 24,
-    textAlign: 'center', 
+    textAlign: 'center',
     color: 'white',
   },
   heading2: {
     marginLeft: 10,
     fontFamily: 'ModernAntiquaRegular',
     fontSize: 20,
-    textAlign: 'center', 
+    textAlign: 'center',
     color: 'white',
   },
   headings2: {
@@ -131,14 +137,17 @@ const styles = StyleSheet.create({
   },
   body2: {
     fontSize: 16,
-    paddingLeft: 20,
     color: 'white',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    marginBottom: 5,
+    paddingLeft: 15,
   },
   body3: {
     fontSize: 13,
-    paddingLeft: 20,
     color: 'white',
+    width: 150, // Adjust the width percentage as needed
+    marginBottom: 10,
+    paddingLeft: 15,
   },
   image: {
     height: 100,
@@ -155,13 +164,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     flex: 1,
-    alignItems: 'center', 
-    justifyContent: 'center', 
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   booksContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between', 
-    marginBottom: 10, 
+    justifyContent: 'space-between',
+    marginBottom: 10,
   },
   card: {
     marginTop: 10,
@@ -177,7 +186,17 @@ const styles = StyleSheet.create({
     width: 150,
     height: 200,
   },
-
+  readMoreLink: {
+    color: '#CDF2FA',
+    textDecorationLine: 'underline',
+    textAlign: 'center',
+  },
+  readLessLink: {
+    color: '#FFFFFF',
+    textDecorationLine: 'underline',
+    textAlign: 'center',
+    marginTop: 5,
+  },
 });
 
 export default CompetitionScreen;

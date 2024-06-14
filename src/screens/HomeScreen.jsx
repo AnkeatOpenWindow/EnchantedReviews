@@ -21,7 +21,7 @@ const HomeScreen = ({ navigation }) => {
           const userDoc = await getDoc(doc(db, 'users', user.uid));
           if (userDoc.exists()) {
             setUsername(userDoc.data().username);
-            setImageUri(userDoc.data().imageUrl || null); // Set the image URL if it exists, otherwise null
+            setImageUri(userDoc.data().imageUrl || null); // Set the image URL if it exists
           } else {
             console.log("User document does not exist.");
           }
@@ -49,9 +49,9 @@ const HomeScreen = ({ navigation }) => {
     fetchCompetitions();
   }, []);
 
-  
-  const handleNavigateToCompetitionScreen = () => {
-    navigation.navigate('Competition');
+
+  const handleNavigateToCompetitionScreen = (competitionTitle) => {
+    navigation.navigate('Competition', { title: competitionTitle });
   };
 
   const handleNavigateToSettingsScreen = () => {
@@ -72,7 +72,7 @@ const HomeScreen = ({ navigation }) => {
             <TouchableOpacity onPress={handleNavigateToSettingsScreen}>
               <Image
                 style={styles.tinyLogo}
-                source={imageUri ? { uri: imageUri } : profileImage}
+                source={imageUri ? { uri: imageUri } : require('../../assets/profile.jpg')}
               />
             </TouchableOpacity>
           </View>
@@ -89,27 +89,33 @@ const HomeScreen = ({ navigation }) => {
         </View>
 
         <Text style={styles.headings2}>Competitions</Text>
-        {/*TODO: make it so that it shows that the current open competion is visable over one that isn't*/}
-        {competitions.map((competition) => (
-          <TouchableOpacity
-            key={competition.id}
-            style={styles.card}
-            onPress={competition.title === "Book review competition" ? handleNavigateToCompetitionScreen : undefined}
-          >
-            <View style={styles.imageContainer}>
-              <Image
-                style={styles.image2}
-                source={{ uri: competition.imageURL }}
-                resizeMode="contain"
-              />
-            </View>
-            <Text style={styles.body2} paddingBottom={5}>{competition.title}</Text>
-            <Text style={styles.body3}>Begins at: {competition.opendate}</Text>
-            <Text style={styles.body3}>Ends at: {competition.closedate}</Text>
-          </TouchableOpacity>
-        ))}
-
-
+        {competitions.map((competition) => {
+          const isClosed = competition.title === "Gaming review competition";
+          return (
+            <TouchableOpacity
+              key={competition.id}
+              style={styles.card}
+              onPress={() => !isClosed && handleNavigateToCompetitionScreen(competition.title)}
+              disabled={isClosed}
+            >
+              <View style={styles.imageContainer}>
+                <Image
+                  style={styles.image2}
+                  source={{ uri: competition.imageURL }}
+                  resizeMode="contain"
+                />
+                {isClosed && (
+                  <View style={styles.overlay}>
+                    <Text style={styles.overlayText}>Coming Soon</Text>
+                  </View>
+                )}
+              </View>
+              <Text style={styles.body2} paddingBottom={5}>{competition.title}</Text>
+              <Text style={styles.body3}>Begins at: {competition.opendate}</Text>
+              <Text style={styles.body3}>Ends at: {competition.closedate}</Text>
+            </TouchableOpacity>
+          );
+        })}
       </View>
     </ScrollView>
   );
@@ -121,7 +127,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#AD91F6",
   },
   maincontainer: {
-    marginTop: 45,
+    paddingTop: 25,
     marginLeft: 20,
     marginRight: 20,
   },
@@ -198,6 +204,7 @@ const styles = StyleSheet.create({
   imageContainer: {
     alignItems: 'center',
     justifyContent: 'center',
+    position: 'relative',
   },
   image2: {
     width: 320,
@@ -210,6 +217,22 @@ const styles = StyleSheet.create({
     borderRadius: 100, // Half of the width and height to make it circular
     marginBottom: 10,
     marginLeft: 120,
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+  },
+  overlayText: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
   },
 });
 
