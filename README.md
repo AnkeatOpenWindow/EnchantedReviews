@@ -129,52 +129,53 @@ Start the Expo development server by running:
 <!-- You can add the links to all of your imagery at the bottom of the file as references -->
 ## Features and Functionality
 
-<div style="display: flex; justify-content: space-between;">
-  <img src="./assets/Mockups/1.png" alt="Image 1" width="300" style="margin-right: 10px;">
-  <img src="./assets/Mockups/2.png" alt="Image 2" width="300">
-</div>
 ### Feature 1: Login or create an account
 
 If the users is new they can create an account by in the sign up screen or they can login with their email and password if they have an account
 
 <div style="display: flex; justify-content: space-between;">
-  <img src="./assets/Mockups/3.png" alt="Image 3" width="300" style="margin-right: 10px;">
-  <img src="./assets/Mockups/4.png" alt="Image 4" width="300">
+  <img src="./assets/Mockups/2.png" alt="Image 2" width="300" style="margin-right: 10px;">
+  <img src="./assets/Mockups/3.png" alt="Image 3" width="300">
 </div>
+
 ### Feature 2: View current competitions
 
 On the home screen all current competions, with the name, time it starts and ends, will shown. When they tap on the competition it will taken them to the competition screen where the instructions are given with the items, for exmaple books, on which the users can write reviews on.
 
 <div style="display: flex; justify-content: space-between;">
-  <img src="./assets/Mockups/5.png" alt="Image 5" width="300" style="margin-right: 10px;">
-  <img src="./assets/Mockups/6.png" alt="Image 6" width="300">
+  <img src="./assets/Mockups/4.png" alt="Image 3" width="300" style="margin-right: 10px;">
+  <img src="./assets/Mockups/5.png" alt="Image 4" width="300">
 </div>
+
 ### Feature 3: Voting for reviews on an item
 
-If the user taps on the heart icon of the review it will add a vote to the review. The review with the most votes will apear at the top of the list with a crest next tp the username of the person who wrote the review. However a user can only for for a review ones and not for any reviews they have written.
+If the user taps on the heart icon of the review it will add a vote to the review. There is a filter added to allow users to view either the the reviews basied off the number of votes, with the most being at the top or the latest. The review with the most votes will have a crest next to the username of the person who wrote the review. However a user can only for for a review ones and not for any reviews they have written.
 
-<img src="./assets/Mockups/7.png" alt="Image 7" width="300">
+<div style="display: flex; justify-content: space-between;">
+  <img src="./assets/Mockups/6.png" alt="Image 5" width="300" style="margin-right: 10px;">
+  <img src="./assets/Mockups/7.png" alt="Image 6" width="300" style="margin-right: 10px;">
+  <img src="./assets/Mockups/8.png" alt="Image 6" width="300">
+</div>
+
 ### Feature 4: Writing you own review.
 
 If the user taps on the plus con icon they will be rirected to the screen where they can write their own review and post it. Which will then show along side the other reviews.
 
-<img src="./assets/Mockups/8.png" alt="Image 8" width="300">
+<img src="./assets/Mockups/9.png" alt="Image 7" width="300">
+
+
 ### Feature 5: Edit you profile image.
 
 On the settings screen the user can view their username, email and profile image. If the user had just created an account their profile image will be the default image that has been preset. But if the user taps on the "Pick an image from your camara roll" button it will allow the user to pick the image they want. Once the image has been selected the "Save image" button that image will be saved as their profile image and display where the default profile image was before.
+
+<img src="./assets/Mockups/10.png" alt="Image 8" width="300">
 
 
 <!-- CONCEPT PROCESS -->
 <!-- Briefly explain your concept ideation process -->
 ## Concept Process
 
-The `Conceptual Process` is the set of actions, activities and research that was done when starting this project.
-
-### Ideation
-
-![image5][image5]
-<br>
-![image6][image6]
+Baised on the brief requirements we had to choose an app that involved around a competition theme of our choosing. As such I choose a competion where users can write reviews on any items that has a genre of fictional.  
 
 ### Wireframes
 
@@ -222,9 +223,24 @@ The `Development Process` is the technical implementations and functionality don
 
 ### Mockups
 
-![image9][image9]
+<div style="display: flex; justify-content: space-between;">
+  <img src="./assets/Mockups/1.png" alt="Image 5" width="300" style="margin-right: 10px;">
+  <img src="./assets/Mockups/2.png" alt="Image 6" width="300" style="margin-right: 10px;">
+  <img src="./assets/Mockups/3.png" alt="Image 6" width="300">
+</div>
 <br>
-![image10][image10]
+<div style="display: flex; justify-content: space-between;">
+  <img src="./assets/Mockups/4.png" alt="Image 6" width="300" style="margin-right: 10px;">
+  <img src="./assets/Mockups/5.png" alt="Image 6" width="300" style="margin-right: 10px;">
+  <img src="./assets/Mockups/6.png" alt="Image 5" width="300">
+</div>
+<br>
+<div style="display: flex; justify-content: space-between;">
+  <img src="./assets/Mockups/7.png" alt="Image 6" width="300" style="margin-right: 10px;">
+  <img src="./assets/Mockups/8.png" alt="Image 6" width="300" style="margin-right: 10px;">
+  <img src="./assets/Mockups/9.png" alt="Image 6" width="300" style="margin-right: 10px;">
+  <img src="./assets/Mockups/10.png" alt="Image 6" width="300">
+</div>
 
 <!-- VIDEO DEMONSTRATION -->
 ### Video Demonstration
