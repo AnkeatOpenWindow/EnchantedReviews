@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from 'react-native';
-import { handleLogout } from '../services/authService';
-import { db } from '../../firebase';
+import { db, auth } from '../../firebase'; // Ensure correct imports
 import Logo from '../../assets/Logo.png';
-import { auth } from '../../firebase';
-import { doc, collection, getDoc, getDocs } from "firebase/firestore";
-
+import { doc, collection, getDocs, onSnapshot } from "firebase/firestore";
 
 const HomeScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [competitions, setCompetitions] = useState([]);
-  const [imageUri, setImageUri] = useState(null); // For displaying the user's profile image
-  const [image, setImage] = useState(null); // For managing the selected image (if needed)
+  const [imageUri, setImageUri] = useState(null);
 
   useEffect(() => {
     const user = auth.currentUser;
@@ -19,8 +15,9 @@ const HomeScreen = ({ navigation }) => {
       console.log("No user logged in.");
       return;
     }
-  
-    const unsubscribe = doc(db, 'users', user.uid).onSnapshot((doc) => {
+
+    const userDocRef = doc(db, 'users', user.uid);
+    const unsubscribe = onSnapshot(userDocRef, (doc) => {
       if (doc.exists()) {
         setUsername(doc.data().username);
         setImageUri(doc.data().imageUrl || null);
@@ -30,8 +27,7 @@ const HomeScreen = ({ navigation }) => {
         setImageUri(null);
       }
     });
-  
-    // Clean up the listener on unmount
+
     return () => unsubscribe();
   }, []);
 
@@ -47,7 +43,6 @@ const HomeScreen = ({ navigation }) => {
     };
     fetchCompetitions();
   }, []);
-
 
   const handleNavigateToCompetitionScreen = (competitionTitle) => {
     navigation.navigate('Competition', { title: competitionTitle });
