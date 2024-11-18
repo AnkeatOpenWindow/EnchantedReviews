@@ -108,18 +108,53 @@ If you haven't already, you need to install the React Native CLI globally
    ```sh
    npm install -g react-native-cli
    ```
-5. Start the Expo Development Server
+5. Add a `firebase.js` file in the root and added the following
+    ```sh
+   
+    import { initializeApp } from "firebase/app";
+    import { initializeAuth, getAuth, getReactNativePersistence } from "firebase/auth";
+    import { getFirestore } from "firebase/firestore";
+    import { getStorage } from "firebase/storage";
+    import AsyncStorage from '@react-native-async-storage/async-storage';
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID",
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+
+    // Initialize Firebase Auth with persistence
+    const auth = initializeAuth(app, {
+      persistence: getReactNativePersistence(AsyncStorage)
+    });
+
+    // Export auth, db, and storage
+    export { auth };
+    export const db = getFirestore(app);
+    export const storage = getStorage(app);
+
+   ```
+The be sure to replace the `firebaseConfig` with your firebaseConfig from firebase.
+
+6. Start the Expo Development Server
 Start the Expo development server by running:
    ```sh
    expo start
    ```
-6: Running the App with Expo Go
+7: Running the App with Expo Go
 
-  6.1 Download and install the Expo Go app from the App Store (iOS) or Google Play Store (Android) on your mobile device.
+  7.1 Download and install the Expo Go app from the App Store (iOS) or Google Play Store (Android) on your mobile device.
   
-  6.2 Open the Expo Go app on your device.
+  7.2 Open the Expo Go app on your device.
   
-  6.3 In the Expo Dev Tools in your browser, you will see a QR code. Scan this QR code using the Expo Go app.
+  7.3 In the Expo Dev Tools in your browser, you will see a QR code. Scan this QR code using the Expo Go app.
   
   * For iOS: Use the camera app to scan the QR code.
   * For Android: Use the built-in QR code scanner in the Expo Go app.
